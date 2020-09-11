@@ -1,0 +1,384 @@
+\documentclass[12pt,letterpaper]{article}
+
+\input{co456_preamble}
+
+%---------------
+\begin{document}
+%---------------
+
+%%%%% Title
+\title{
+  \textbf{CO 456: Introduction to Game Theory} \\[\baselineskip]
+  \large
+  University of Waterloo \\
+  Martin Pei \\
+  Fall 2020
+}
+\author{Marco Yang}
+\date{Last updated: \today}
+
+{
+  \sffamily
+  \maketitle
+}
+\thispagestyle{empty}
+
+%%%%% Table of contents
+\pagebreak
+\pagenumbering{roman}
+\setcounter{page}{2}
+
+{
+  \sffamily
+  \tableofcontents{\markboth{\contentsname}{}}
+}
+
+%%%%% List of theorems
+
+
+%%%%% Lectures
+\pagebreak
+\pagenumbering{arabic}
+
+%%%%% Lec 1
+\section{Course Administration}
+
+See the course outline.
+
+%%%%% Lec 2
+\section{Impartial Games}
+
+\subsection{Nim}
+
+We are given some piles of chips.
+Two players play alternately.
+On a player's turn, they pick a pile and remove at least 1 chip from it.
+The first player who cannot make a move loses.
+
+\begin{ex}
+  \begin{itemize}
+    \item
+      1, 1, 2.
+      \begin{itemize}
+        \item Player I removes 2 chips from the last pile.
+        \item Player II removes a 1-chip pile.
+        \item Player I removes the last chip.
+        \item Player II has no move and loses.
+        \item Player I has a winning strategy.
+      \end{itemize}
+      This is a \hldef{winning game} or \hldef{winning position}.
+    \item
+      5, 5.
+      \begin{itemize}
+        \item Regardless of Player I's move, Player II can mirror it on the other pile.
+        \item Player II always has a move, so Player I loses.
+        \item Player I always loses (\emph{i.e.} Player II has a winning strategy).
+      \end{itemize}
+      This is a \hldef{losing game} or \hldef{losing position}.
+    \item
+      5, 7.
+      \begin{itemize}
+        \item Player I first equalizes piles (here, removing 2 from the pile of 7).
+        \item Player II loses (by the previous case).
+      \end{itemize}
+      This is a winning game.
+  \end{itemize}
+\end{ex}
+
+\begin{lem}{}{2.1}
+  In instances of Nim with two piles of $n, m$ chips, it is a winning game if and only if
+  $n \neq m$.
+\end{lem}
+
+\pagebreak
+\subsection{Impartial games}
+
+Nim is an impartial game.
+
+\begin{defn}{impartial game}{impartial_game}
+  Conditions for an \hldef{impartial game}:
+  \begin{enumerate}
+    \item There are two players, Player I (who starts) and Player II.
+    \item There are several positions and a starting position.
+    \item A player performs one of a set of allowable moves, which depends only on the current
+      position and not on the player (hence ``impartial'').
+      Each possible move generates an \hldef{option}.
+    \item The players move alternately.
+    \item There is complete information.
+    \item There are no chance moves.
+    \item The first player with no available move loses.
+    \item The rules guarantee that games end.
+  \end{enumerate}
+\end{defn}
+
+\begin{ex}
+  Games which are not impartial:
+  \begin{itemize}
+    \item Tic-tac-toe (violates 7---may tie)
+    \item Chess (violates 3---may only move your pieces)
+    \item Poker (violates 5---cards hidden)
+    \item Monopoly (violates 6---relies on dice rolls)
+  \end{itemize}
+\end{ex}
+
+\begin{ex}
+  Let $G = (1, 1, 2)$ be a Nim game.
+  There are 4 possible moves, hence 4 possible options.
+
+  \begin{center}
+    \begin{forest}
+      for tree={draw, rectangle, parent anchor=east, child anchor=west, edge={->}},
+      l sep=2cm
+      [{$G = (1, 1, 2)$}, grow'=east
+        [{$H_1 = (1, 1, 1)$}]
+        [{$H_2 = (1, 1, 0)$}]
+        [{$H_3 = (1, 0, 2)$}]
+        [{$H_4 = (0, 1, 2)$}]
+      ]
+    \end{forest}
+  \end{center}
+
+  Each $H_i$ is itself another Nim game.
+\end{ex}
+
+Note: we can define an impartial game by its position and options recursively.
+
+\begin{defn}{game simplicity}{game_simple}
+  A game $H$ that is reachable from game $G$ by a sequence of allowable moves is \hldef{simpler}
+  than $G$.
+\end{defn}
+
+\begin{ex}
+  Other impartial games:
+  \begin{itemize}
+    \item
+      Subtraction game
+      \begin{itemize}
+        \item One pile of chips.
+        \item Valid move: remove 1, 2, or 3 chips.
+      \end{itemize}
+    \item
+      Rook game
+      \begin{itemize}
+        \item $m \times n$ chess board with a rook at $(i, j)$.
+        \item Valid move: move the rook any number of spaces up or left.
+      \end{itemize}
+    \item
+      Green hackenbush game
+      \begin{itemize}
+        \item Graph connected to the floor at some vertices.
+        \item Valid move: remove an edge of the graph, then any components no longer connected to
+          the floor.
+      \end{itemize}
+  \end{itemize}
+\end{ex}
+
+Spoiler: all impartial games are essentially Nim games.
+
+\pagebreak
+\subsection{Winning strategy}
+
+\begin{lem}{}{2.2}
+  In any game $G$, either Player I or Player II has a winning strategy.
+\end{lem}
+
+\begin{thmproof}
+  By induction on simplicity of $G$.
+
+  If $G$ has no allowable moves, then Player I loses, so Player II has a winning strategy.
+  Assume $G$ has allowable moves and the lemma holds for all games simpler than $G$.
+  Among all options of $G$, if Player I has a winning strategy in one of them, Player I will move to
+  that option and win.
+  Otherwise, Player II has a winning strategy for all options, so Player II wins regardless of
+  Player I's move.
+\end{thmproof}
+
+That is, every impartial game $G$ is either a winning game or a losing game.
+
+\begin{ex}
+  Winning game of Nim (at least one winning move):
+  \begin{center}
+    \begin{forest}
+      l sep=30pt,
+      s sep=20pt
+      [{$(5, 7)$}
+        [{$(5, 5)$}, edge={->},
+          edge label={node[midway, left, xshift=-1em, font=\footnotesize]{winning move}}]
+        [{$(5, 6)$}, edge={->, dashed}]
+        [{$(5, 7)$}, edge={->, dashed}]
+        [{$\phantom{(}\cdots$\phantom{)}}, edge={->, dashed},
+          edge label={node[midway, right, xshift=1em, font=\footnotesize]{non-winning moves}}]
+      ]
+    \end{forest}
+  \end{center}
+
+  Losing game of Nim (no winning moves):
+  \begin{center}
+    \begin{forest}
+      l sep=30pt,
+      s sep=20pt
+      [{$(5, 5)$}
+        [{$(4, 5)$}, edge={->, dashed}]
+        [{$(3, 5)$}, edge={->, dashed}]
+        [{$\phantom{(}\cdots$\phantom{)}}, edge={->, dashed}]
+        [{$(5, 4)$}, edge={->, dashed}]
+        [{$(5, 3)$}, edge={->, dashed}]
+        [{$\phantom{(}\cdots$\phantom{)}}, edge={->, dashed}, edge label={
+          node[midway, right, xshift=2em, font=\footnotesize]{non-winning moves}}]
+      ]
+    \end{forest}
+  \end{center}
+\end{ex}
+
+Note: we assume players play perfectly.
+If there is a winning move, then they will take it.
+
+%%%%% Lec 3
+\section{Equivalent Games (I)}
+
+\subsection{Game sums}
+
+\begin{defn}{game sum}{game_sum}
+  Let $G$ and $H$ be two games with respective options $G_1, \ldots, G_m$ and $H_1, \ldots, H_n$.
+  We define \hldef{$G + H$} as the game with options
+  \[
+    G_1 + H, \ldots, G_m + H, G + H_1, \ldots, G + H_n.
+  \]
+\end{defn}
+
+\begin{ex}
+  We denote \hldef{$*n$} to be a game of Nim with one pile of $n$ chips.
+  Then $*1 + *1 + *2$ is a Nim game with three piles of 1, 1, and 2 chips.
+\end{ex}
+
+\begin{ex}
+  Let \hldef{$\#n$} be the subtraction game with $n$ chips.
+  Then $*5 + \#7$ is the game where a move is either to remove at least 1 chip from the pile of 5
+  (Nim) or to remove 1, 2, or 3 chips from the pile of 7 (subtraction game).
+\end{ex}
+
+\begin{lem}{}{3.1}
+  Let $\mathcal{G}$ be the set of all impartial games.
+  Then for all $G, H, J \in \mathcal{G}$,
+  \begin{enumerate}
+    \item $G + H \in \mathcal{G}$ (closure)
+    \item $(G + H) + J = G + (H + J)$ (associativity)
+    \item There exists an identity $0 \in \mathcal{G}$ (the game with no options) where
+      $G + 0 = 0 + G = G$.
+    \item $G + H = H + G$ (symmetry)
+  \end{enumerate}
+\end{lem}
+
+Note: $\mathcal{G}$ is an abelian group, except for an inverse element.
+
+\pagebreak
+\subsection{Game equivalences}
+
+\begin{defn}{game equivalence}{game_equiv}
+  Two games $G$ and $H$ are \hldef{equivalent} if for any game $J$, $G + J$ and $H + J$ have the
+  same outcome (\emph{i.e.}, both are winning games or both are losing games).
+  Notation: $G \equiv H$.
+\end{defn}
+
+\begin{ex}
+  $*3 \equiv *3$.
+  Since $*3 + J$ is the same game as $*3 + J$, they have the same outcome.
+
+  $*3 \not\equiv *4$.
+  $*3 + *3$ is a winning game but $*4 + *3$ is a losing game (\cref{lem:2.1}).
+\end{ex}
+
+\begin{lem}{}{3.2}
+  $*n \equiv *m$ if and only if $n = m$.
+\end{lem}
+
+\begin{lem}{}{3.3}
+  The relation $\equiv$ is an equivalence relation.
+  That is, for all $G, H, K \in \mathcal{G}$,
+  \begin{enumerate}
+    \item $G \equiv G$ (reflexivity).
+    \item $G \equiv H$ if and only if $H \equiv G$ (symmetry).
+    \item If $G \equiv H$ and $H \equiv J$, then $G \equiv J$ (transitivity).
+  \end{enumerate}
+\end{lem}
+
+\begin{exer}{}{3.4}
+  Prove that if $G \equiv H$, then $G + J \equiv H + J$ for any game $J$.
+\end{exer}
+
+\begin{exerproof}
+  Consider any games $J$ and $K$.
+  Let $M = J + K$.
+  Then $G + J + K = G + M$ and $H + J + K = H + M$.
+  Since $G \equiv H$, $G + M$ and $H + M$ have the same outcome.
+  But then $(G + J) + K$ and $(H + J) + K$ have the same outcome by \cref{lem:3.1}.
+  $K$ was arbitrary, so $G + J \equiv H + J$.
+\end{exerproof}
+
+\pagebreak
+\subsection{Losing games and empty Nim}
+
+Nim with one pile $*n$ is a losing game if and only if $n = 0$.
+
+\begin{thm}{}{3.5}
+  $G$ is a losing game if and only if $G \equiv *0$.
+\end{thm}
+
+\begin{cor}{}{3.6}
+  If $G$ is a losing game, then $J$ and $J + G$ have the same outcome for any game $J$.
+\end{cor}
+
+\begin{thmproof}
+  Since $G$ is a losing game, $G \equiv *0$ by \cref{thm:3.5}.
+  Then $J + G \equiv J + *0 \equiv J$ by \cref{exer:3.4} and \cref{lem:3.1}, so $J$ and $J + G$ have
+  the same outcome.
+\end{thmproof}
+
+\begin{ex}
+  \begin{enumerate}
+    \item
+      Recall $*5 + *5$ and $*7 + *7$ are losing games.
+      \cref{cor:3.6} says $*5 + *5 + *7 + *7$ is also a losing game.
+      (Player I moves in either $*5 + *5$ or $*7 + *7$.
+      Player II plays a winning move in the same part by equalizing piles.)
+    \item
+      $\underbrace{*1 + *1 + *2}_{\text{winning}} + \underbrace{*5 + *5}_{\text{losing}}$ is a
+      winning game by \cref{cor:3.6}.
+      (Player I removes $*2$, leaving a similar game to the previous.)
+  \end{enumerate}
+\end{ex}
+
+\begin{thmproof}[Proof (\cref{thm:3.5}).]
+  \begin{itemize}[leftmargin=5em]
+    \item[$(\impliedby)$]
+      If $G \equiv *0$, then $G + *0$ has the same outcome as $*0 + *0$.
+      But $*0 + *0$ is a losing game, so $G$ is a losing game.
+    \item[$(\implies)$]
+      Suppose $G$ is a losing game.
+      We show $G + J$ and $*0 + J \equiv J$ have the same outcome.
+      \begin{enumcase}
+        \item
+          Suppose $J$ is a losing game.
+          We show ``if $G$ and $J$ are both losing games, then $G + J$ is a losing game'' by
+          induction on simplicity of $G + J$.
+
+          When $G + J$ has no options, $G$ and $J$ have no options, so $G$, $J$, and $G + J$ are all
+          losing games.
+          Assume $G + J$ has some otpions and the statement holds for simpler games.
+          WLOG, Player I moves on $G$, resulting in $G' + J$.
+          $G$ is a losing game, so $G'$ is a winning game.
+          Player II makes a winning move from $G'$ to $G''$, resulting in $G'' + J$.
+          Then $G''$ is a losing game, so by induction $G'' + J$ is a losing game.
+          Player I loses, so $G + J$ is a losing game.
+        \item
+          Suppose $J$ is a winning game, so $J$ as a winning move to $J'$.
+          Player I moves from $G + J$ to $G + J'$.
+          $G$ and $J'$ are both losing games, so by \circled{1} $G + J'$ is a losing game.
+          Player II loses, so Player I wins and $G + J$ is a winning game.
+      \end{enumcase}
+  \end{itemize}
+\end{thmproof}
+
+%---------------
+\end{document}
+%---------------

@@ -1,0 +1,9 @@
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.toc
+*.synctex.gz
+__latexindent_temp.tex
+.DS_Store
