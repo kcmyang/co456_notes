@@ -393,7 +393,7 @@ Nim with one pile $*n$ is a losing game if and only if $n = 0$.
 \end{ex}
 
 \begin{thmproof}[Proof (\cref{thm:3.5}).]
-  \begin{itemize}[leftmargin=5em]
+  \begin{itemize}[leftmargin=4em]
     \item[$(\impliedby)$]
       If $G \equiv *0$, then $G + *0$ has the same outcome as $*0 + *0$.
       But $*0 + *0$ is a losing game, so $G$ is a losing game.
@@ -422,6 +422,461 @@ Nim with one pile $*n$ is a losing game if and only if $n = 0$.
       \end{enumcase}
   \end{itemize}
 \end{thmproof}
+
+%%%%% Lec 4
+\section{Equivalent Games (II)}
+
+\begin{lem}{copycat principle}{4.1}
+  For any game $G$, $G + G \equiv *0$.
+\end{lem}
+
+\begin{thmproof}
+  By induction on the simplicity of $G$.
+
+  When $G$ has no options, $G + G$ has no options, so $G + G \equiv *0$ by \cref{lem:4.1}.
+
+  Suppose $G$ has options, and WLOG suppose Player I moves from $G + G$ to $G' + G$.
+  Then Player II can move to $G' + G'$.
+  By induction, $G' + G' \equiv *0$, so it is a losing game for Player I.
+  Therefore, $G + G$ is a losing game, and $G + G \equiv *0$.
+\end{thmproof}
+
+Aside: this means $G$ is its own ``inverse''.
+
+\begin{lem}{}{4.2}
+  $G \equiv H$ if and only if $G + H \equiv *0$.
+\end{lem}
+
+\begin{thmproof}
+  \begin{itemize}[leftmargin=4em]
+    \item[($\implies$)]
+      From $G \equiv H$, we add $H$ to both sides to get $G + H \equiv H + H \equiv *0$ by the
+      \hyperref[lem:4.1]{copycat principle}.
+    \item[($\impliedby$)]
+      From $G + H \equiv *0$, we add $H$ to both sides to get $G + H + H \equiv *0 + H \equiv H$.
+      But $G + H + H \equiv G + *0 \equiv G$ by the \hyperref[thm:3.5]{copycat principle}, so
+      $G \equiv H$.
+  \end{itemize}
+\end{thmproof}
+
+\begin{ex}
+  $*1 + *2 + *3$ is a losing game, so $*1 + *2 + *3 \equiv *0$.
+  By \cref{lem:4.2}, $*1 + *2 \equiv *3$.
+  Or, $*1 + *3 \equiv *2$.
+\end{ex}
+
+Another way to prove game equivalence is by showing that they have equivalent options.
+
+\begin{lem}{}{4.3}
+  If the options of $G$ are equivalent to the options of $H$, then $G \equiv H$.
+  (More precisely: there is a bijection between options of $G$ and $H$ where paired options are
+  equivalent.)
+\end{lem}
+
+\begin{ex}
+  We can show $*1 + *2 \equiv *3$ by \cref{lem:4.3}:
+  \[
+    \begin{array}{c c c}
+      *1 + *2 & & *3 \\
+      \hline
+      *2 & \equiv & *2 \\
+      *1 & \equiv & *1 \\
+      *1 + *1 & \equiv & *0 \\
+    \end{array}
+  \]
+\end{ex}
+
+Note: the converse of \cref{lem:4.3} is false.
+
+\begin{thmproof}[Proof (\cref{lem:4.3}).]
+  It suffices to show that $G + H \equiv *0$ (by \cref{lem:4.2}), \emph{i.e.}, $G + H$ is a losing
+  game.
+  This is true when $G$ and $H$ both have no options.
+  Suppose that $G$ and $H$ have options and suppose WLOG Player I moves to $G' + H$.
+  By assumption, there exists an option of $H$, say $H'$, where $H' \equiv G'$.
+  So Player II can move to $G' + H'$.
+  Since $G' \equiv H'$, $G' + H' \equiv *0$ by \cref{lem:4.2}.
+  So $G' + H'$ is a losing game for Player I.
+  Hence $G + H$ is a losing game.
+\end{thmproof}
+
+%%%%% Lec 5
+\section{Nim and Nimbers (I)}
+
+Goal: show that every Nim game is equivalent to a Nim game with a single pile.
+
+\subsection{Nimbers}
+
+\begin{defn}{nimber}{nimber}
+  If $G$ is a game such that $G \equiv *n$ for some $n$, then $n$ is the \hldef{nimber} of $G$.
+\end{defn}
+
+\begin{ex}
+  Any losing game has nimber $0$ (\cref{thm:3.5}).
+\end{ex}
+
+\begin{exer}{}{5.1}
+  Show that the notion of a nimber is well-defined.
+  (That is, every impartial game has exactly one nimber.)
+\end{exer}
+
+\begin{exerproof}[Proof (see P3(b)).]
+
+\end{exerproof}
+
+\begin{thm}{}{5.2}
+  If $n = 2^{a_1} + 2^{a_2} + \cdots$ where $a_1 > a_2 > \cdots$, then
+  $*n \equiv *2^{a_1} + *2^{a_2} + \cdots$.
+\end{thm}
+
+(The link to powers of $2$ is hard to explain; we'll revisit this later.)
+
+\begin{ex}
+  $11 = 2^3 + 2^1 + 2^0$ and $13 = 2^3 + 2^2 + 2^0$.
+  Using \cref{thm:5.2}, $*11 \equiv *2^3 + *2^1 + *2^0$ and $*13 \equiv *2^3 + *2^2 + *2^0$.
+  Then
+  \begin{alignat*}{3}
+    *11 + *13
+    &\equiv (*2^3 + *2^1 + *2^0) + (*2^3 + *2^2 + *2^0) && \\
+    &\equiv (*2^3 + *2^3) + *2^2 + *2^1 + (*2^0 + *2^0)
+      \qquad & \text{(associativity, commutativity)} & \\
+    &\equiv *0 + *2^2 + *2^1 + *0 & \text{(copycat principle)} && \\
+    &\equiv *2^2 + *2^1 && \\
+    &\equiv *(2^2 + 2^1) & \text{(\cref{thm:5.2})} &&\\
+    &\equiv *6. &&
+  \end{alignat*}
+  So the nimber of $*11 + *13$ is $6$.
+\end{ex}
+
+In general, how can we find the nimber of $*b_1 + *b_2 + \cdots + *b_n$?
+We look at the binary expansions of each $b_i$.
+The copycat principle will cancel any pair of identical powers of $2$.
+So, we should look for powers of $2$ that appear in an odd number of expansions of $b_i$'s.
+
+We can use binary numbers: 11 in binary is 1011, 13 in binary is 1101.
+Take the XOR of the binary representations:
+\[
+  \begin{array}{r r}
+    \texttt{1011} & \\
+    \xor\ \texttt{1101} & \\
+    \cline{1-1}
+    \texttt{0110} & = 6 \\
+  \end{array}
+\]
+So $11 \xor 13 = 6$.
+
+\begin{ex}
+  Consider $*25 + *21 + *11$.
+  The nimber of this game is given by the binary XOR of the numbers:
+  \[
+    \begin{array}{r}
+      \texttt{11001} \\
+      \texttt{10101} \\
+      \xor\ \texttt{01011} \\
+      \hline
+      \texttt{00111} \\
+    \end{array}
+  \]
+  So $*25 + *21 + *11 \equiv *7$ (the nimber is $7$).
+\end{ex}
+
+\begin{cor}{}{5.3}
+  $*b_1 + *b_2 + \cdots + *b_n \equiv *(b_1 \xor b_2 \xor \cdots \xor b_n)$.
+\end{cor}
+
+This shows that every Nim game has a nimber.
+
+\pagebreak
+\subsection{Winning strategy for Nim}
+
+\begin{ex}
+  $*11 + *13 \equiv *6$.
+  This is a winning game.
+  How can we find a winning move?
+
+  We want to move to a game that is equivalent to $*0$.
+  We can add $*6$ to both sides: $*11 + *13 + *6 \equiv *6 + *6 \equiv *0$ (copycat principle).
+  But this isn't a valid move.
+
+  Consider $*11 + (*13 + *6)$.
+  We see $13 \xor 6 = 11$.
+  So this is equivalent to $*11 + *11$, a losing game.
+
+  The winning move: remove 2 chips from the pile of 13.
+\end{ex}
+
+\begin{ex}
+  $*25 + *21 + *11 \equiv *7$.
+  Add $*7$ to both sides.
+  Consider $*25 + (*21 + *7) + *11$.
+  We see $21 \xor 7 = 18$, so this is equivalent to $*25 + *18 + *11$.
+
+  The winning move: remove 3 chips from the pile of 21.
+
+  Why did we pair $*7$ with $*21$ instead of $*25$ or $*11$?
+  Those would be invalid moves: $25 \xor 7 = 30 > 25$ and $11 \xor 7 = 12 > 11$.
+\end{ex}
+
+Can we always pair the nimber with a pile such that the resulting equivalent game is simpler?
+Yes.
+
+\begin{lem}{}{5.4}
+  If $*b_1 + \cdots + *b_n \equiv *s$ where $s > 0$, then there exists some $b_i$ where
+  $b_i \xor s < b_i$.
+\end{lem}
+
+Proof idea: look for the largest power of 2 in $s$.
+Consider $*25 + *21 + *11 \equiv *7$.
+\begin{center}
+  \begin{tabular}{c c c c c c r l}
+     & \texttt{1} & \texttt{1} & \cellcolor{blue!20}\texttt{0} & \texttt{0} & \texttt{1}
+      & \qquad\textcolor{gray}{25} & $25 \xor 7$: 4 is added \\
+     & \texttt{1} & \texttt{0} & \cellcolor{blue!20}\texttt{1} & \texttt{0} & \texttt{1}
+      & \qquad\textcolor{gray}{21} & $21 \xor 7$: 4 is subtracted \\
+    $\xor$ & \texttt{1} & \texttt{1} & \cellcolor{blue!20}\texttt{0} & \texttt{0} & \texttt{1}
+      & \qquad\textcolor{gray}{11} & $11 \xor 7$: 4 is added \\
+    \cline{1-6}
+     & \texttt{0} & \texttt{0} & \cellcolor{blue!20}\texttt{1} & \texttt{1} & \texttt{1}
+      & \qquad\textcolor{gray}{7} & \\
+     & & & \textcolor{gray}{$\uparrow$} & \textcolor{gray}{$\uparrow$}
+      & \textcolor{gray}{$\uparrow$} & & \\
+     & & & \textcolor{gray}{4} & \textcolor{gray}{2} & \textcolor{gray}{1}
+      & $\leftarrow$ & $4 > 2 + 1$ so $\xor$ reduces 21 and increases 25 or 11 \\
+  \end{tabular}
+\end{center}
+
+\begin{thmproof}[Proof (\cref{lem:5.4}).]
+  Suppose $s = 2^{a_1} + 2^{a_2} + \cdots$ where $a_1 > a_2 > \cdots$.
+  Then $2^{a_1}$ appears in the binary expansions of $b_1, \ldots, b_n$ an odd number of times (in
+  particular, at least once).
+  Let $b_i$ be one of them.
+  Suppose $*b_i + *s \equiv *t$ for some $t$.
+  Since $2^{a_1}$ is in the binary expansions of $b_i$ and $s$, $2^{a_1}$ is not in the binary
+  expansion of $t$.
+  For $2^{a_2}, 2^{a_3}, \ldots$, at worst none of them are in the binary expansion of $b_i$, so all
+  of them are in the binary expansion of $t$.
+  So $t \leq b_i - 2^{a_1} + 2^{a_2} + 2^{a_3} + \cdots < b_i$ since
+  $2^{a_i} > 2^{a_2} + 2^{a_3} + \cdots$.
+\end{thmproof}
+
+Finding winning moves in a winning Nim game: Say a game has nimber $s$.
+Look at the largest power of 2 in the binary expansion of $s$.
+Pair it up with any pile $*b_i$ containing this power of 2.
+By \cref{lem:5.4}, $s \xor b_i < s$.
+So a winning move is taking away $b_i - (s \xor b_i)$ chips from the pile $*b_i$.
+
+%%%%% Lec 6
+\section{Nim and Nimbers (II)}
+
+\begin{lem}[code={\setcounter{\tcbcounter}{1}}]{}{6.2}
+  Let $0 \leq p, q < 2^a$ and suppose \cref{thm:5.2} holds for all values less than $2^a$.
+  Then $p \xor q < 2^a$.
+\end{lem}
+
+\begin{thmproof}[Proof (exercise: see P3(c))]
+
+\end{thmproof}
+
+Illustration of proof of \cref{thm:5.2}: Consider $*7$.
+$7 = 4 + 2 + 1$.
+We want to prove $*7 \equiv *4 + *2 + *1$; by induction, $*2 + *1 \equiv *3$.
+We want to show $*7 \equiv *4 + *3$.
+By \cref{lem:4.3}, we can show the two sides have equivalent options.
+
+Options of $*7$: $*0, *1, \ldots, *6$.
+
+Options of $*4 + *3$: \circled{1} Move on $*4$. \quad \circled{2} Move on $*3$.
+
+\begin{enumcase}
+  \item
+    Options are $*0 + *3$, $*1 + *3$, $*2 + *3$, $*3 + *3$.
+    Each part is $< 4$, so by \cref{lem:6.2} each option is $< 4$.
+    (Calculating them, we have $*3, *2, *1, *0$, so they are also distinct.)
+  \item
+    Options are $*4 + *2$, $*4 + *1$, $4 + *0$.
+    Here, each first part is $4$ and each second part is $< 4$, so each power of 2 appears at most
+    once among the two parts.
+    We can apply induction here.
+    (Calculating them, we have $*6, *5, *4$, which are exactly the remaining options of $*7$.)
+\end{enumcase}
+
+\begin{thmproof}[Proof (\cref{thm:5.2}).]
+  By induction on $n$.
+
+  When $n = 1$, $n = 2^0$ and $*1 \equiv *2^0$.
+
+  Suppose $n = 2^{a_1} + 2^{a_2} + \cdots$ where $a_1 > a_2 > \cdots$.
+  Let $q = n - 2^{a_1} = 2^{a_2} + 2^{a_3} + \cdots$.
+  If $q = 0$, then $n = 2^{a_1}$, so $*n \equiv *2^{a_1}$ (\cref{lem:3.1}).
+  Assume $q \geq 1$.
+  Since $q < n$, by induction, $*q \equiv *2^{a_2} + *2^{a_3} + \cdots$.
+  It remains to show that $*n \equiv *2^{a_1} + *q$.
+
+  The options of $*n$ are $*0, *1, \ldots, *(n - 1)$.
+  The options of $*2^{a_1} + *q$ can be partitioned into two types.
+  \begin{enumcase}
+    \item
+      Consider options of the form $*i + *q$ where $0 \leq i < 2^{a_1}$.
+      Since $i, q < n$, by induction, the theorem holds for $i$ and $q$.
+      So $*i$ and $*q$ are equivalent to sums of Nim piles of their binary expansions.
+      Using arguments from the last lecture (cancellation by copycat principle, as in
+      \cref{cor:5.3}), $*i + *q \equiv *r_i$ where $r_i = i \xor q$.
+      Since $i, q < 2^{a_1}$, we have $r_i < 2^{a_1}$ (\cref{lem:6.2}).
+      So $0 \leq r_0, r_1, \ldots, r_{2^{a_1} - 1} < 2^{a_1}$.
+
+      We now show these $r_i$'s are distinct.
+      Suppose $r_i = r_j$ for some $i \neq j$.
+      Then $*r_i \equiv *r_j$ (\cref{lem:3.2}), so $*i + *q \equiv *j + *q$.
+      Adding $*q$ on both sides, we get $*i \equiv *j$ (copycat principle), so $i = j$.
+      Contradiction.
+
+      Finally, there are $2^{a_1}$ of the $r_i$'s and there are $2^{a_1}$ possible values ($0$ to
+      $2^{a_1} - 1$).
+      By pigeonhole, for each $0 \leq j \leq 2^{a_1} - 1$, there is exactly one $r_i$ with
+      $r_i = j$.
+      So the options of this type are equivalent to $\{*0, *1, \ldots, *2^{a_1} - 1\}$.
+    \item
+      Consider options of the form $*2^{a_1} + *i$ where $0 \leq i < q$.
+      Suppose $i = 2^{b_1} + 2^{b_2} + \cdots$ where $b_1 > b_2 > \cdots$.
+      Then no $b_i$ is equal to $a_1$.
+      So $2^{a_1} + 2^{b_1} + 2^{b_2} + \cdots$ is a sum of distinct powers of 2.
+      Then
+      \begin{alignat*}{3}
+        *2^{a_1} + *i
+        &\equiv *2^{a_1} + *2^{b_1} + *2^{b_2} + \cdots
+          & \text{(applying induction on $i$)} && \\
+        &\equiv *(2^{a_1} + 2^{b_1} + 2^{b_2} + \cdots)
+          & \qquad\quad \text{(applying induction on $2^{a_1} + i$)} && \\
+        &\equiv *(2^{a_1} + i). & &&
+      \end{alignat*}
+      Since $0 \leq i < q$, the options of this type are equivalent to
+      \[ \{*2^{a_1}, *(2^{a_1} + 1), \ldots, *\underbrace{(2^{a_1} + q - 1)}_{n - 1}\}. \]
+  \end{enumcase}
+  Combining the two types of options, we see that the options of $*2^{a_1} + *q$ are equivalent to
+  the options of $*n$.
+  By \cref{lem:4.2}, $*2^{a_1} + *q \equiv *n$.
+\end{thmproof}
+
+%%%%% Lec 7
+\section{Sprague--Grundy Theorem}
+
+So far: all Nim games are equivalent to a Nim game of a single pile.
+
+Goal: extend this to all impartial games.
+
+\subsection{Poker nim}
+
+Being equivalent does not mean that two games play the same way.
+
+\begin{ex}
+  $*11 + *13 \equiv *6$.
+  LHS: we want to move to $*11 + *11 \equiv *0$ by removing 2 chips from $*13$.
+  RHS: remove all 6 chips.
+
+  There are other moves in the game, however.
+  Say we move to $*11 + *8 \equiv *15$.
+  LHS: we remove 5 chips from $*13$.
+  RHS: add 9 chips.
+
+  Or, starting with $*11 + *11 \equiv *0$, any move on $*11 + *11$ will increase $*0$.
+  Technically, adding chips is not allowed in Nim.
+\end{ex}
+
+\begin{defn}{poker nim}{poker_nim}
+  A variation on Nim: \hldef{poker nim} consists of a regular Nim game plus a bag of $B$ chips.
+  We now allow regular Nim moves and adding $B' \leq B$ chips to one pile.
+\end{defn}
+
+\begin{ex}
+  In poker nim, $*3 + *4$ can move to $*53 + *4$ (assuming $B \geq 50$).
+\end{ex}
+
+How does this change the game of Nim?
+It doesn't.
+
+Say we face a losing game, so any regular Nim moves would lead to a loss.
+In poker nim, we now add some chips to one pile.
+The opposing play will simply remove the chips we placed, so nothing has changed.
+Adding chips is not beneficial to any player.
+
+When we say that a game is equivalent to a Nim game with one pile, it is actually a \emph{poker nim}
+game with one pile.
+
+\pagebreak
+\subsection{Mex}
+
+Suppose a game $G$ has options equivalent to $*0, *1, *2, *5, *10, *25$.
+We claim that $G \equiv *3$.
+
+The options of $*3$, which are $*0, *1, *2$, are all available to $G$.
+If we add chips to $*3$, then the opposing player can just remove them to get back to $*3$.
+
+How did we get $*3$?
+It is the smallest non-negative integer that is not an option of $G$.
+
+\begin{defn}{mex}{mex}
+  Given a set of non-negative integers $S$, $\mex(S)$ is the smallest non-negative integer not in
+  $S$.
+  (Mex stands for ``minimum excluded integer''.)
+\end{defn}
+
+\begin{ex}
+  $\mex(\{0, 1, 2, 5, 15, 25\}) = 3$.
+\end{ex}
+
+The mex function is the critical link between any impartial games and Nim games.
+
+\begin{thm}{}{7.1}
+  Let $G$ be an impartial game and let $S$ be the set of integers $n$ such that there exists an
+  option of $G$ equivalent to $*n$.
+  Then $G \equiv *(\mex(S))$.
+\end{thm}
+
+\begin{ex}
+  $*1 + *1 + *2$ has options
+  \begin{itemize}
+    \item $*1 + *2 \equiv *3$,
+    \item $*1 + *1 \equiv *0$, and
+    \item $*1 + *1 + *1 \equiv *1$.
+  \end{itemize}
+  By \cref{thm:7.1}, $*1 + *1 + *2 \equiv *(\mex(\{0, 1, 3\})) \equiv *2$.
+  (This is obvious by the copycat principle.)
+\end{ex}
+
+\begin{exer}{}{7.2}
+  Prove that a game cannot be equivalent to one of its options.
+\end{exer}
+
+\begin{thmproof}[Proof (\cref{thm:7.1}).]
+  Let $m = \mex(S)$.
+  It suffices to show that $G + *m \equiv *0$ (\cref{lem:4.2}).
+  \begin{enumcase}
+    \item
+      Suppose we move to $G + *m'$ where $m' < m$.
+      Since $m = \mex(S)$, there exists an option $G'$ of $G$ such that $G' \equiv *m'$.
+      Player II moves to $G' + *m'$, which is a losing game since $G' \equiv *m'$ (\cref{lem:4.2}).
+    \item
+      Suppose we move to $G' + *m$ where $G'$ is an option of $G$.
+      Then $G' \equiv *k$ for some $k \in S$.
+      So $G' + *m \equiv *k + *m \not\equiv *0$ since $k \neq \mex(S)$.
+      So $G' + *m$ is a winning game for Player II.
+      Then $G + *m$ is a losing game for Player I, so $G + *m \equiv *0$.
+  \end{enumcase}
+\end{thmproof}
+
+\begin{thm}{Sprague--Grundy Theorem}{7.3}
+  Any impartial game $G$ is equivalent to a poker nim game $*n$ for some $n$.
+\end{thm}
+
+\begin{thmproof}[Slightly sketchy proof.]
+  If $G$ has no options, then $G \equiv *0$.
+  Suppose $G$ has options $G_1, \ldots, G_k$.
+  By induction, $G_i \equiv *n_i$ for some $n_i$.
+  By \cref{thm:7.1}, $G \equiv *(\mex(\{n_1, \ldots, n_k\}))$.
+\end{thmproof}
+
+So any impartial game has a nimber.
+How does this help?
 
 %---------------
 \end{document}
