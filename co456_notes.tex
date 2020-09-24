@@ -1,13 +1,14 @@
-\documentclass[12pt,letterpaper]{article}
+\documentclass[12pt,letterpaper]{report}
 
 \input{co456_preamble}
 
 %---------------
 \begin{document}
-%---------------
+%--------------
 
 %%%%% Title
 \title{
+  \Huge
   \textbf{CO 456: Introduction to Game Theory} \\[\baselineskip]
   \large
   University of Waterloo \\
@@ -33,12 +34,12 @@
   \tableofcontents{\markboth{\contentsname}{}}
 }
 
-%%%%% List of theorems
-
-
 %%%%% Lectures
 \pagebreak
 \pagenumbering{arabic}
+
+%%%%% Topic: Combinatorial Games
+\coursetopic{Combinatorial Games}
 
 %%%%% Lec 1
 \section{Course Administration}
@@ -877,6 +878,310 @@ The mex function is the critical link between any impartial games and Nim games.
 
 So any impartial game has a nimber.
 How does this help?
+
+%%%%% Lec 8
+\section{Finding Nimo}
+
+Finding nimbers is recursive:
+\begin{itemize}
+  \item Games with no options have nimber 0.
+  \item Move backwards and use $\mex$ to determine other nimbers.
+\end{itemize}
+
+\begin{ex}
+  Rook game.
+
+  \begin{minipage}{0.4\textwidth}
+    \centering
+    \[
+      \renewcommand{\arraystretch}{1.5}
+      \begin{array}{c|c|c|c|c|c|}
+        \multicolumn{1}{c}{} & \multicolumn{1}{c}{1} & \multicolumn{1}{c}{2} & \multicolumn{1}{c}{3}
+          & \multicolumn{1}{c}{4} & \multicolumn{1}{c}{5} \\
+        \cline{2-6}
+        1 & *0 & *1 & *2 & *3 & \cellcolor{black!25} *4 \\
+        \cline{2-6}
+        2 & *1 & *0 & *3 & *2 & \cellcolor{black!25} *5 \\
+        \cline{2-6}
+        3 & *2 & *3 & *0 & *1 & \cellcolor{black!25} *6 \\
+        \cline{2-6}
+        4 & \cellcolor{black!25} *3 & \cellcolor{black!25} *2 & \cellcolor{black!25} *1
+          & \cellcolor{black!25} *0 & \cellcolor{red!25}*7 \\
+        \cline{2-6}
+      \end{array}
+    \]
+  \end{minipage}\hfill
+  \begin{minipage}{0.55\textwidth}
+    Winning move: move to $(4, 4)$, an option with nimber 0.
+
+    \vspace{\baselineskip}
+    This is like a 2-pile Nim game.
+  \end{minipage}
+\end{ex}
+
+\begin{ex}
+  Substraction game (remove 1, 2, or 3 chips).
+  Let $s_n$ be the nimber of a subtraction game with $n$ chips.
+  Then $s_n = \mex(\{s_{n - 1}, s_{n - 2}, s_{n - 3}\})$ (if they exist).
+
+  \[
+    \begin{array}{c|c|c|c|c|c|c|c|c|c|c|c|c|c|c}
+      n & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & \cdots \\
+      \hline
+      s_n & 0 & 1 & 2 & 3 & 0 & 1 & 2 & 3 & 0 & 1 & 2 & 3 & 0 & \cdots \\
+    \end{array}
+  \]
+
+  We see a game is a losing game if and only if $n \equiv 0 \pmod{4}$.
+  When $n \not\equiv 0 \pmod{4}$, a winning move is to remove just enough chips to get to the next
+  multiple of 4.
+  For example, if $n = 7$, remove 3 chips.
+  (Equivalently, remove $s_n$ chips.)
+\end{ex}
+
+\begin{ex}
+  Subtraction game with removing 2, 5, or 6 chips.
+  Then $s_n = \mex(\{s_{n - 2}, s_{n - 5}, s_{n - 6}\})$ (if they exist).
+
+  \begin{center}
+    \begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c}
+      $n$ & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & $\cdots$ \\
+      \hline
+      $s_n$ & 0 & 0 & 1 & 1 & 0 & 2 & 1 & 3 & 0 & 2 & 1 & 0 & 0 & 1 & 1 & $\cdots$ \\
+      \multicolumn{1}{c}{} & \multicolumn{11}{c}{
+        \raisebox{0.5\normalbaselineskip}{
+          \clap{
+            $\underbrace{
+              \hphantom{\mbox{{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}\hspace*{
+                \dimexpr25\arraycolsep+10\arrayrulewidth
+              }}}
+            }_{\text{repeats (not proved here)}}$
+          }
+        }
+      } & \multicolumn{5}{c}{} \\
+    \end{tabular}
+  \end{center}
+
+  A game is a losing game if and only if $n \equiv 0, 1, 4, 8 \pmod{11}$.
+
+  For example, a winning move from 9 chips is to move to 4.
+\end{ex}
+
+\begin{ex}[Example: combining games]
+  Let $G$ be the $4 \times 5$ rook game at $(4, 2)$.
+  Let $H$ be the second subtraction game with $n = 7$.
+
+  \begin{minipage}{0.45\textwidth}
+    \centering
+    \[
+      \renewcommand{\arraystretch}{1.5}
+      \begin{array}{c|c|c|c|c|c|}
+        \multicolumn{1}{c}{} & \multicolumn{1}{c}{1} & \multicolumn{1}{c}{2} & \multicolumn{1}{c}{3}
+          & \multicolumn{1}{c}{4} & \multicolumn{1}{c}{5} \\
+        \cline{2-6}
+        1 & *0 & *1 & *2 & *3 & *4 \\
+        \cline{2-6}
+        2 & *1 & *0 & *3 & *2 & *5 \\
+        \cline{2-6}
+        3 & *2 & *3 & *0 & *1 & *6 \\
+        \cline{2-6}
+        4 & *3 & \cellcolor{red!25} *2 & *1 & *0 & *7 \\
+        \cline{2-6}
+      \end{array}
+    \]
+  \end{minipage}\hfill
+  \begin{minipage}{0.54\textwidth}
+    \[
+      \begin{array}{c|c|c|c|c|c|c|c|c}
+        n & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\
+        \hline
+        s_n & 0 & 0 & 1 & 1 & 0 & 2 & 1 & \cellcolor{red!25} 3 \\
+      \end{array}
+    \]
+  \end{minipage}
+
+  \vspace{\baselineskip}
+  Then $G \equiv *2$ and $H \equiv *3$, so $G + H \equiv *2 + *3 \equiv *1$, which is a winning
+  game.
+
+  The winning moves:
+  \begin{itemize}
+    \item
+      From $H$, $3 \xor 1 = 2$.
+      Move to $*2$.
+      Remove 2 chips in the subtraction game.
+    \item
+      From $G$, $2 \xor 1 = 3$.
+      Move to $*3$ (this may be surprising since the nimber increases, but it is entirely legal
+      here).
+      Move to $(4, 1)$ or $(3, 2)$.
+  \end{itemize}
+\end{ex}
+
+Notes:
+\begin{itemize}
+  \item
+    In general, there may not be a pattern for the nimbers of impartial games.
+  \item
+    Because of the recursive nature of nimbers, the search space becomes too large for many games.
+  \item
+    For impartial games in which we can find the nimbers, we can find winning moves by considering
+    the nimbers.
+\end{itemize}
+
+%%%%% Topic: Strategic Games
+\coursetopic{Strategic Games}
+
+%%%%% Lec 9
+\section{Strategic Games}
+
+\subsection{Prisoner's dilemma}
+
+Game show version: 2 players won \$10,000.
+They each need to make a final decision: ``share'' or ``steal''.
+\begin{itemize}
+  \item If both pick ``share'', then they each win \$5,000.
+  \item If one picks ``steal'' and the other picks ``share'', then the one who picked ``steal'' gets
+  \$10,000 and the other gets nothing.
+  \item If both pick ``steal'', then they each get a small consolation prize worth \$10.
+\end{itemize}
+
+This is an example of a strategic game.
+
+How should the players behave?
+The benefit a player receives is dependent on their own decision and the decisions of other players.
+
+\begin{defn}{strategic game}{strategic_game}
+  A \hldef{strategic game} is defined by specifying a set $N = \{1, \ldots, n\}$ of players where
+  for each player $i \in N$, there is a set of possible strategies $S_i$ to play and a utility
+  function $u_i : S_1 \times \cdots \times S_n \to \mathbb{R}$.
+\end{defn}
+
+\begin{ex}
+  With the prisoner's dilemma above, $s_1 = s_2 = \{\text{share}, \text{steal}\}$.
+  Samples of the utility functions: $u_1(\text{share}, \text{share}) = 5000$,
+  $u_2(\text{steal}, \text{share}) = 0$.
+  We can summarize the utility functions in a \hldef{payoff table}.
+
+  \begin{center}
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{c c |c|c|}
+      \multicolumn{2}{c}{} & \multicolumn{2}{c}{P II} \\
+      \multicolumn{2}{c}{} & \multicolumn{1}{c}{share} & \multicolumn{1}{c}{steal} \\
+      \cline{3-4}
+      \multirow{2}{*}{P I} & share & 5000, 5000 & 0, 10000 \\
+      \cline{3-4}
+      & steal & 10000, 0 & 10, 10 \\
+      \cline{3-4}
+    \end{tabular}
+  \end{center}
+
+  Each cell records the utilities of P I, P II in that order given the strategies played in that row
+  (P I) and column (P II).
+\end{ex}
+
+\begin{enumerate}
+  \item
+    All players are rational and selfish (want to maximize their own utility).
+  \item
+    All players have knowledge of all game parameters (including rationality and selfishness).
+  \item
+    All players move simultaneously.
+  \item
+    Player $i$ plays a strategy $s_i \in S_i$, forming a strategy profile
+    $s = (s_1, \ldots, s_n) \in S_1 \times \cdots \times S_n$.
+    Player $i$ earns $u_i(s)$.
+\end{enumerate}
+
+\pagebreak
+\subsection{Resolving the prisoner's dilemma}
+
+Given a strategic game, what are we looking for?
+One answer is we want to know how the players are expected to behave.
+
+In the prisoner's dilemma, what would a rational and selfish player choose to play?
+
+\begin{enumcase}
+  \item
+    If you know that the other player chooses ``share'', then choosing ``share'' gives 5000 while
+    choosing ``steal'' gives 10000.
+    ``Steal'' is better.
+  \item
+    If you know that the other player chooses ``steal'', then choosing ``share'' gives 0 while
+    choosing ``steal'' gives 10.
+    ``Steal'' is better.
+\end{enumcase}
+
+In both cases, it is better to steal than to share.
+So we expect both player to choose ``steal''.
+
+This is an example of a \hldef{strictly dominating} strategy: regardless of how other players
+behave, this strategy gives the best utility over all other possible strategies.
+If a strictly dominating strategy exists, then we expect the players to play it.
+
+In this case, playing a strictly dominating strategy (``steal'') yields very little benefit.
+The players could get more if there is some cooperation (both share).
+So even though we expect the strictly dominating strategy to be played, it might not have the best
+``social welfare'' (total utility of the players).
+
+\pagebreak
+\subsection{Nash equilibrium (NE)}
+
+There are many games with no strictly dominating strategies.
+
+\begin{ex}[Example: Bach or Stravinsky?]
+  Two players want to go to a concert.
+  Player I likes Bach while Player II likes Stravinsky, but they both prefer to be with each other.
+  The payoff table looks like this:
+
+  \begin{center}
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{c c |c|c|}
+      \multicolumn{2}{c}{} & \multicolumn{2}{c}{P II} \\
+      \multicolumn{2}{c}{} & \multicolumn{1}{c}{Bach} & \multicolumn{1}{c}{Stravinsky} \\
+      \cline{3-4}
+      \multirow{2}{*}{P I} & Bach & 2, 1 & 0, 0 \\
+      \cline{3-4}
+      & Stravinsky & 0, 0 & 1, 2 \\
+      \cline{3-4}
+    \end{tabular}
+  \end{center}
+
+  No strictly dominating strategy exists for either player.
+  What do we expect to happen?
+  If both players choose ``Bach'', then there is no reason for one player to switch their strategy
+  (which gives utility 0).
+  The result is similar if both choose ``Stravinsky''.
+\end{ex}
+
+These are steady states, which we call \hldef{Nash equilibria}: strategy profiles where no player
+is incentivized to change strategy.
+
+\pagebreak
+\subsection{Mixed strategies}
+
+There are many games with ``no'' Nash equilibria.
+
+\begin{ex}[Example: rock, paper, scissors]
+  R beats S, S beats P, P beats R.
+  Let utilities be $1$ for a win, $0$ for a tie, and $-1$ for a loss.
+
+  \begin{center}
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{c c |c|c|c|}
+      \multicolumn{2}{c}{} & \multicolumn{3}{c}{P II} \\
+      \multicolumn{2}{c}{} & \multicolumn{1}{c}{R} & \multicolumn{1}{c}{P}
+        & \multicolumn{1}{c}{S} \\
+      \cline{3-5}
+      \multirow{3}{*}{P I} & R & $0, 0$ & $-1, 0$ & $1, -1$ \\
+      \cline{3-5}
+      & P & $1, -1$ & $0, 0$ & $-1, 1$ \\
+      \cline{3-5}
+      & S & $-1, 1$ & $1, -1$ & $0, 0$ \\
+      \cline{3-5}
+    \end{tabular}
+  \end{center}
+\end{ex}
 
 %---------------
 \end{document}

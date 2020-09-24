@@ -13,6 +13,7 @@
 \usepackage{geometry}
 \usepackage{mathrsfs}
 \usepackage{mathtools}
+\usepackage{multirow}
 \usepackage{parskip}
 \usepackage[notmath]{sansmathfonts}
 \usepackage{tabularx}
@@ -51,14 +52,36 @@
 \fancyhead[R]{\color{black!50} \small \sffamily \leftmark}
 \fancyfoot[C]{\color{black!50} \small \sffamily \thepage}
 
+% Chapters (parts)
+\counterwithout*{section}{chapter} % Don't reset section number in new chapter
+\titleformat{\chapter}
+  {\huge \sffamily \bfseries \centering} % Format
+  {} % Label
+  {1ex} % Sep
+  {} % Before
+\titlecontents{chapter}
+  [0em] % Left spacing
+  {\vspace{\baselineskip}} % Above
+  {\large \bfseries} % Numbered format
+  {\large \bfseries} % Numberless format
+  {\hfill} % Filler page format
+  [\vspace{\baselineskip}] % Below
+
 % Sections (lectures)
+\renewcommand{\thesection}{\arabic{section}}
 \newcommand{\sectionbreak}{\clearpage\phantomsection}
 \titleformat{\section}
   {\Large \sffamily \bfseries} % Format
   {Lecture \thesection:} % Label
   {1ex} % Sep
   {} % Before
-\cftsetindents{section}{0pt}{2em}
+\titlecontents{section}
+  [3em] % Left spacing
+  {} % Above
+  {\bfseries \contentslabel{2em}} % Numbered format
+  {} % Numberless format
+  {\titlerule*{$\cdot$}\contentspage} % Filler page format
+  [] % Below
 
 % Subsections (topics)
 \titleformat{\subsection}
@@ -67,14 +90,21 @@
   {0pt} % Sep
   {} % Before
 \titlecontents{subsection}
-  [2em] % Left spacing
+  [4em] % Left spacing
   {} % Above
   {} % Numbered format
   {} % Numberless format
-  {\hfill\contentspage} % Filler page format
+  {\hfill} % Filler page format
   [] % Below
 
 %% Commands
+
+% New chapter
+\newcommand{\coursetopic}[1]{
+  \chapter{#1}
+  \thispagestyle{empty}
+  \pagebreak
+}
 
 % Environments
 \newtcbtheorem[number within=section]
@@ -178,7 +208,7 @@
   {defn} % label prefix
 \crefname{defn}{Definition}{Definitions}
 
-\newtcolorbox{ex}{
+\newtcolorbox{ex}[1][Example]{
   enhanced,
   parbox=false,
   sharp corners,
@@ -187,7 +217,7 @@
   right=0pt,
   bottom=0pt,
   frame hidden,
-  title=Example,
+  title={#1},
   fonttitle=\sffamily\bfseries,
   colback=white,
   coltitle=red!60!black,
