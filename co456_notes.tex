@@ -38,9 +38,6 @@
 \pagebreak
 \pagenumbering{arabic}
 
-%%%%% Topic: Combinatorial Games
-\coursetopic{Combinatorial Games}
-
 %%%%% Lec 1
 \section{Course Administration}
 
@@ -89,6 +86,9 @@ Open book.
       \item 20\% final exam
     \end{itemize}
 \end{itemize}
+
+%%%%% Topic: Combinatorial Games
+\coursetopic{Combinatorial Games}
 
 %%%%% Lec 2
 \section{Impartial Games}
@@ -1157,7 +1157,6 @@ There are many games with no strictly dominating strategies.
 These are steady states, which we call \hldef{Nash equilibria}: strategy profiles where no player
 is incentivized to change strategy.
 
-\pagebreak
 \subsection{Mixed strategies}
 
 There are many games with ``no'' Nash equilibria.
@@ -1182,6 +1181,298 @@ There are many games with ``no'' Nash equilibria.
     \end{tabular}
   \end{center}
 \end{ex}
+
+%%%%% Lec 10
+\section[Nash Equilibrium and the Best Response Function]{%
+  Nash Equilibrium and the Best Response \\ Function
+}
+
+\subsection{Notation}
+
+Let $S = S_1 \times \cdots S_n$ be the set of all strategy profiles.
+We will often compare the utilities of a player's strategies when we fix the strategies of the
+remaining players.
+Let $S_{-i}$ be the set of all strategy profiles of all players except player $i$ (we drop $S_i$
+from the cartesian product $S_1 \times \cdots \times S_n$).
+If $s \in S$, then the profile obtained from $s$ by dropping $s_i$ is denoted $s_{-i} \in S_{-i}$.
+If player $i$ switches their strategy from $s_i$ to $s_i^{\prime}$, then the new strategy profile
+is denoted $(s_i^{\prime}, s_{-i}) \in S$.
+
+\subsection{Nash equilibrium}
+
+Recall: a Nash equilibrium is a strategy profile where no player is incentivized to switch
+strategies.
+
+\begin{defn}{Nash equilibrium}{nash_eq}
+  A strategy profile $s^* \in S$ is a \hldef{Nash equilibrium} if
+  $u_i(s^*) \geq u_i(s_i^{\prime}, s_{-i}^*)$ for all $s_i^{\prime} \in S_i$ and for all $i \in N$.
+\end{defn}
+
+\begin{ex}[Example: prisoner's dilemma revisited]
+  \begin{center}
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{c c |c|c|}
+      \multicolumn{2}{c}{} & \multicolumn{2}{c}{P II} \\
+      \multicolumn{2}{c}{} & \multicolumn{1}{c}{share} & \multicolumn{1}{c}{steal} \\
+      \cline{3-4}
+      \multirow{2}{*}{P I} & share & 5000, 5000 & 0, 10000 \\
+      \cline{3-4}
+      & steal & 10000, 0 & 10, 10 \\
+      \cline{3-4}
+    \end{tabular}
+  \end{center}
+
+  Let $s^* = (\text{steal}, \text{steal})$.
+
+  For Player I: $u_1(s^*) = 10$,
+  $u_1(\underbrace{\text{share}}_{s_1^{\prime}}, \underbrace{\text{steal}}_{s_{-1}^*})
+    = 0 < u_1(s^*)$.
+
+  Similar for Player II.
+  Thus $s^*$ is an NE.
+\end{ex}
+
+\begin{ex}[Example: guessing $\frac{2}{3}$ average game]
+  There are three players and a positive integer $k$.
+  The players each simultaneously pick an integer from $\{1, \ldots, k\}$, producing the strategy
+  profile $s = (s_1, s_2, s_3)$.
+  There is \$1 which is split among all players whose choices are closest to $\frac{2}{3}$ of the
+  average of the three numbers.
+  The other players get \$0.
+
+  If $s = (5, 2, 4)$, then the average is $\frac{11}{3}$, and $\frac{2}{3}$ of the average is
+  $\frac{22}{9} = 2 + \frac{4}{9}$.
+  Player II is the closest, so $u_2(s) = 1$ and $u_1(s) = u_3(s) = 0$.
+
+  Is $s$ an NE?
+  No: if Player II switches to 2, then $u_1(2, s_{-1}) = u_1(2, 2, 4) = \frac{1}{2}$ ($\frac{2}{3}$
+  of the average is now $\frac{16}{9}$, which is closer to 2 than to 4).
+
+  Is there an NE in this game?
+  Idea: lowering your guess generally pulls $\frac{2}{3}$ of the average closer to your guess.
+  Try $(1, 1, 1)$.
+  If a player switches to $t \geq 2$, then $\frac{2}{3}$ of the average is
+  $\frac{4 + 2t}{9} = \frac{4}{9} + \frac{2}{9}t$, which is closer to 1 than to $t$.
+\end{ex}
+
+\begin{exer}{}{10.1}
+  Prove that $(1, 1, 1)$ is the only NE of this game.
+\end{exer}
+
+\pagebreak
+\subsection{Best response function (BRF)}
+
+For an NE, a player does not want to switch.
+If you fix the strategies of the remaining players, then you play a strategy that maximizes utility
+for yourself, \emph{i.e.}, it is a ``best response'' to the fixed strategies.
+
+\begin{defn}{best response function (BRF)}{brf}
+  Player $i$'s \hldef{best response function} for $s_{-i} \in S_{-i}$ is given by
+  \[
+    B_i(s_{-i}) = \{ s_i^{\prime} \in S_i :
+      u_i(s_i^{\prime}, s_{-i}) \geq u_i(s_i, s_{-i}) \ \forall s_i \in S_i
+    \}.
+  \]
+  That is, the utility of a best response is greater than or equal to the utilities of all possible
+  responses to $s_{-i}$.
+\end{defn}
+
+\begin{ex}
+  In the prisoner's dilemma: $B_1(\text{share}) = \{ \text{steal} \}$,
+  $B_1(\text{steal}) = \{ \text{steal} \}$.
+\end{ex}
+
+\begin{ex}
+  In the $\frac{2}{3}$ average game, $B_1(5, 5) = \{ 1, 2, 3, 4 \}$:
+  \[
+    u_1(x, 5, 5) = \begin{cases}
+      1 \qquad &\text{if } \ x < 5 \\
+      \frac{1}{3} \qquad &\text{if } \ x = 5 \\
+      0 \qquad &\text{if } \ x > 5 \\
+    \end{cases}
+  \]
+\end{ex}
+
+If $s^*$ is an NE, then each player $i$ must have played a best response to $s_{-i}^*$.
+Changing $s_i^*$ cannot increase the utility for $i$.
+The converse is also true.
+
+\begin{lem}{}{10.2}
+  $s^* \in S$ is a Nash equilibrium if and only if $s_i^* \in B_i(s_{-i}^*)$ for all $i \in N$.
+\end{lem}
+
+\begin{thmproof}[Proof (exercise: see P8(a)).]
+  \begin{itemize}[leftmargin=4em]
+    \item[($\implies$)]
+      Here, $s^* \in S$ is a Nash equilibrium.
+      By definition of a Nash equilibrium, $u_i(s^*) \geq u_i(s_i, s_{-i}^*)$ for all $s_i \in S_i$
+      and for all $i \in N$.
+      Then note $s^* = (s_i^*, s_{-i}^*)$, so equivalently
+      $u_i(s_i^*, s_{-i}^*) \geq u_i(s_i, s_{-i}^*)$ for all $s_i \in S_i$ and for all $i \in N$.
+      By definition of the BRF, $s_i^* \in B_i(s_{-i}^*)$ for all $i \in N$.
+    \item[($\impliedby$)]
+      Here, $s_i^* \in B_i(s_{-i}^*)$ for all $i \in N$.
+      By definition of the BRF, every $s_i^*$ satisfies
+      $u_i(s_i^*, s_{-i}^*) \geq u_i(s_i, s_{-i}^*) \ \forall s_i \in S_i$.
+      But $(s_i^*, s_{-i}^*) = s^*$, so $u_i(s^*) \geq u_i(s_i, s_{-i}^*)$ for all $s_i \in S_i$ and
+      for all $i \in N$.
+      By definition of a Nash equilibrium, $s^*$ is a Nash equilibrium.
+  \end{itemize}
+\end{thmproof}
+
+This lemma helps us find NEs by looking for strategies in the BRF.
+
+\begin{ex}
+  In the prisoner's dilemma payoff table, we mark best responses for each player:
+  \begin{itemize}
+    \item[$\star$:] $B_1(\text{share}) = \{\text{steal}\}$, $B_1(\text{steal}) = \{\text{steal}\}$
+    \item[$\dagger$:] $B_2(\text{share}) = \{\text{steal}\}$, $B_2(\text{steal}) = \{\text{steal}\}$
+  \end{itemize}
+
+  \begin{center}
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{c c |c|c|}
+      \multicolumn{2}{c}{} & \multicolumn{2}{c}{P II} \\
+      \multicolumn{2}{c}{} & \multicolumn{1}{c}{share} & \multicolumn{1}{c}{steal} \\
+      \cline{3-4}
+      \multirow{2}{*}{P I} & share & 5000, 5000 & $0, 10000^{\dagger}$ \\
+      \cline{3-4}
+      & steal & $10000^{\star}, 0$ & $10^{\star}, 10^{\dagger}$ \\
+      \cline{3-4}
+    \end{tabular}
+  \end{center}
+
+  $(\text{steal}, \text{steal})$ is a strategy profile where all strategies are best responses to
+  each other, so it is an NE.
+\end{ex}
+
+\begin{ex}
+  Consider this arbitrary game.
+  Find the BRFs and NEs.
+
+  \begin{center}
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{c c |c|c|c|}
+      \multicolumn{2}{c}{} & \multicolumn{3}{c}{P II} \\
+      \multicolumn{2}{c}{} & \multicolumn{1}{c}{$X$} & \multicolumn{1}{c}{$Y$}
+        & \multicolumn{1}{c}{$Z$} \\
+      \cline{3-5}
+      \multirow{3}{*}{P I} & $A$ & $1, 2$ & $2, 1$ & $1, 0$ \\
+      \cline{3-5}
+      & $B$ & $2, 1$ & $0, 1$ & $0, 0$ \\
+      \cline{3-5}
+      & $C$ & $0, 1$ & $0, 0$ & $1, 2$ \\
+      \cline{3-5}
+    \end{tabular}
+  \end{center}
+
+  BRFs:
+  \begin{itemize}
+    \item[$\star$:] $B_1(X) = \{ B \}, \ \ B_1(Y) = \{ A \}, \ \ B_1(Z) = \{ A, C \}$
+    \item[$\dagger$:] $B_2(A) = \{ X \}, \ \ B_2(B) = \{ X, Y \}, \ \ B_2(C) = \{ Z \}$
+  \end{itemize}
+
+  \begin{center}
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{c c |c|c|c|}
+      \multicolumn{2}{c}{} & \multicolumn{3}{c}{P II} \\
+      \multicolumn{2}{c}{} & \multicolumn{1}{c}{$X$} & \multicolumn{1}{c}{$Y$}
+        & \multicolumn{1}{c}{$Z$} \\
+      \cline{3-5}
+      \multirow{3}{*}{P I} & $A$ & $1, 2^\dagger$ & $2^\star, 1$ & $1^\star, 0$ \\
+      \cline{3-5}
+      & $B$ & $2^\star, 1^\dagger$ & $0, 1^\dagger$ & $0, 0$ \\
+      \cline{3-5}
+      & $C$ & $0, 1$ & $0, 0$ & $1^\star, 2^\dagger$ \\
+      \cline{3-5}
+    \end{tabular}
+  \end{center}
+
+  The NEs are $(B, X)$ and $(C, Z)$ as the strategies are best responses to each other.
+  The rest are not NEs as one strategy is not a best response to the other.
+\end{ex}
+
+%%%%% Lec 11
+\section{Cournot's Oligopoly Model}
+
+We have a set $N = \{1, \ldots, n\}$ of $n$ firms producing a single type of goods sold on the
+common market.
+Each firm $i$ needs to decide the number of units of goods $q_i$ to produce.
+Production cost is $C_i(q_i)$ where $C_i$ is a given increasing function.
+Given a strategy profile $q = (q_1, \ldots, q_n)$, a unit of the goods sell for the price of $P(q)$,
+where $P$ is a given non-increasing function on $\sum_i q_i$ (that is, more goods means a
+lower price).
+The utility of firm $i$ in the strategy profile $q$ is $u_i(q) = q_i P(q) - C_i(q_i)$.
+
+Szidarovsky and Yakowitz proved that a Nash equilibrium always exists under some continuity and
+differentiability assumptions on $P$ and $C$.
+
+\subsection{Special case: linear costs and prices}
+
+Suppose we assume $C_i(q_i) = c q_i \ \forall i \in N$ (the cost is linear with the same unit cost
+$c$ for all firms) and $P(q) = \max\{0, \alpha - \sum_j q_j\}$ (price starts at $\alpha$,
+decreases by 1 for each unit produced, and has minimum 0) where $0 < c < \alpha$.
+
+The utility is
+\[
+  u_i(q) = q_i P(q) - C_i(q_i) = \begin{cases}
+    q_i (\alpha - c - \sum_j q_j) \qquad &\text{if } \ \alpha - \sum_j q_j \geq 0 \\
+    -c q_i &\text{if } \ \alpha - \sum_j q_j < 0
+  \end{cases}.
+\]
+When is it possible to make a profit?
+When $\alpha - c - \sum_j q_j > 0$.
+
+Separate $q_i$ from the sum: $\alpha - c - q_i - \sum_{j \neq i} q_j > 0$, so
+$q_i < \alpha - c - \sum_{j \neq i} q_j$.
+This does not make sense for $q_i$ if RHS $\leq 0$, so assume RHS $> 0$.
+
+The utility is then $q_i(\alpha - c - q_i - \sum_{j \neq i} q_j)$.
+Treating $q_i$ as the variable, this utility is maximized when
+$q_i = \frac{1}{2}(\alpha - c - \sum_{j \neq i} q_j)$ (use calculus).
+The best response function for firm $i$ given the production of the other firms $q_{-i}$ is then
+\[
+  B_i(q_{-i}) = \begin{cases}
+    \{ \frac{1}{2} (\alpha - c - \sum_{j \neq i} q_j) \}
+      \qquad &\text{if } \alpha - c - \sum_{j \neq i} q_j > 0 \\
+    \{ 0 \} &\text{otherwise}
+  \end{cases}.
+\]
+
+\subsection{Two-firm case}
+
+Suppose we simplify to 2 firms.
+Suppose $q^* = (q_1^*, q_2^*)$ is a Nash equilibrium.
+By \cref{lem:10.2}, a player's choice must be the best response to the other player's choice.
+So $q_1^* \in B_1(q_2^*)$ and $q_2^* \in B_2(q_1^*)$.
+Verify that we may assume $q_1^*, q_2^* > 0$.
+Then $q_1^* = \frac{1}{2}(\alpha - c - q_2^*)$ and $q_2^* = \frac{1}{2}(\alpha - c - q_1^*)$.
+Solving this gives $q_1^* = q_2^* = \frac{1}{2}(\alpha - c)$.
+This is the amount we expect each firm to produce at equilibrium.
+The price at equilibrium is then
+\[
+  P(q^*) = \alpha - q_1^* - q_2^* = \alpha - \frac{2}{3}(\alpha - c)
+    = \frac{1}{3}\alpha + \frac{2}{3}c
+\]
+and the profit at equilibrium is
+\[
+  u_i(q^*) = q_i^*(\alpha - c - q_1^* - q_2^*) = \frac{1}{9}(\alpha - c)^2.
+\]
+
+Note 1: Suppose the two firms can collude, and together they produce $Q$ units in total.
+The total profit is then $Q(\alpha - c - Q)$, which is maximized at $Q = \frac{1}{2}(\alpha - c)$.
+The profit is then
+$\frac{1}{2}(\alpha - c)(\alpha - c - \frac{1}{2}(\alpha - c)) = \frac{1}{4}(\alpha - c)^2$.
+Each firm gets $\frac{1}{8}(\alpha - c)^2 > \frac{1}{9}(\alpha - c)^2$.
+
+Note 2: In the general case with $n$ firms, if $q^*$ is an NE, then
+$q_i^* = \frac{1}{2}(\alpha - c - \sum_{j \neq i} q_j^*)$.
+Solving this system gives $q_i^* = \frac{\alpha - c}{n + 1}$.
+The price is $P(q^*) = \alpha - \sum_j q_j^* = \alpha - \frac{n}{n + 1}(\alpha - c)
+  = \frac{1}{n + 1}\alpha + \frac{n}{n + 1}c$.
+As $n \to \infty$, $P(q^*) \to c$.
+As more firms are involved, the expected market price gets closer to the production cost.
+
 
 %---------------
 \end{document}
