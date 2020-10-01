@@ -11,6 +11,7 @@
 \usepackage{forest}
 \usepackage{fullpage}
 \usepackage{geometry}
+\usepackage{graphicx}
 \usepackage{mathrsfs}
 \usepackage{mathtools}
 \usepackage{multirow}
@@ -191,6 +192,7 @@
   {defn} % environment name
   {Definition} % display name
   { % options
+    parbox=false,
     nameref/.style={},
     colback=green!10,
     colframe=green!10,
@@ -212,6 +214,7 @@
   enhanced,
   parbox=false,
   sharp corners,
+  breakable,
   boxrule=0pt,
   left=1ex + 2mm + 4pt,
   right=0pt,

@@ -1473,6 +1473,525 @@ The price is $P(q^*) = \alpha - \sum_j q_j^* = \alpha - \frac{n}{n + 1}(\alpha -
 As $n \to \infty$, $P(q^*) \to c$.
 As more firms are involved, the expected market price gets closer to the production cost.
 
+%%%%% Lec 12
+\section{Strict Dominance}
+
+\begin{defn}{strict dominance}{strict_dominance}
+  For two strategies $s_i^{(1)}, s_i^{(2)} \in S_i$ for player $i$, we say that $s_i^{(1)}$
+  \hldef{strictly dominates} $s_i^{(2)}$ if for all $s_{-i} \in S_{-i}$,
+  $u_i(s_i^{(1)}, s_{-i}) > u_i(s_i^{(2)}, s_{-i})$.
+
+  If there exists a strategy that strictly dominates $s_i$, then $s_i$ is
+  \hldef{strictly dominated}.
+  If $s_i$ strictly dominates all strategies $s_i^\prime \in S_i \setminus \{ s_i \}$, then $s_i$ is
+  a \hldef{strictly dominating strategy}.
+\end{defn}
+
+In prisoner's dilemma, ``steal'' is a strictly dominating strategy for both players.
+
+\begin{lem}{}{12.1}
+  If $s_i \in S_i$ is a strictly dominating strategy for player $i$ and $s^* \in S$ is a Nash
+  equilibrium, then $s_i^* = s_i$.
+\end{lem}
+
+In other words: in any NE, the strictly dominating strategy is played whenever it exists.
+A game is easy to play if such a strategy exists.
+
+We now look at strictly dominated strategies.
+
+\begin{ex}
+  Consider the following strategic game:
+
+  \begin{center}
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{c |c|c|c|}
+      \multicolumn{1}{c}{} & \multicolumn{1}{c}{$X$} & \multicolumn{1}{c}{$Y$}
+        & \multicolumn{1}{c}{$Z$} \\
+      \cline{2-4}
+      $A$ & $4, 2$ & $1, 3$ & $2, 1$ \\
+      \cline{2-4}
+      $B$ & $2, 3$ & $0, 1$ & $3, 1$ \\
+      \cline{2-4}
+    \end{tabular}
+  \end{center}
+
+  $Z$ is strictly dominated by $X$ since $u_2(A, X) > u_2(A, Z)$ and $u_2(B, X) > u_2(B, Z)$.
+  $Z$ is a strictly dominated strategy, so there is no reason to play it.
+\end{ex}
+
+\begin{lem}{}{12.2}
+  If $s^* \in S$ is a Nash equilibrium, then $s_i^*$ is not strictly dominated for any $i \in N$.
+\end{lem}
+
+\pagebreak
+\subsection{Iterated elimination of strictly dominated strategies (IESDS)}
+
+\begin{ex}
+  \begin{minipage}{0.4\textwidth}
+    \centering
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{c |c|c|c|}
+      \multicolumn{1}{c}{} & \multicolumn{1}{c}{$X$} & \multicolumn{1}{c}{$Y$}
+        & \multicolumn{1}{c}{$Z$} \\
+      \cline{2-4}
+      $A$ & $4, 2$ & $1, 3$ & $2, 1$ \\
+      \cline{2-4}
+      $B$ & $2, 3$ & $0, 1$ & $3, 1$ \\
+      \cline{2-4}
+    \end{tabular}
+  \end{minipage}\hfill\begin{minipage}{0.6\textwidth}
+    $Z$ is strictly dominated, so it will not appear in any NE.
+  \end{minipage}
+
+  \hspace{0.20\textwidth} \scalebox{2}{$\downarrow$} \quad eliminate $Z$
+
+  \begin{minipage}{0.4\textwidth}
+    \centering
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{c |c|c|}
+      \multicolumn{1}{c}{} & \multicolumn{1}{c}{$X$} & \multicolumn{1}{c}{$Y$} \\
+      \cline{2-3}
+      $A$ & $4, 2$ & $1, 3$ \\
+      \cline{2-3}
+      $B$ & $2, 3$ & $0, 1$ \\
+      \cline{2-3}
+    \end{tabular}
+  \end{minipage}\hfill\begin{minipage}{0.6\textwidth}
+    $B$ is strictly dominated.
+    (Notice this is new in this smaller game.)
+  \end{minipage}
+
+  \hspace{0.20\textwidth} \scalebox{2}{$\downarrow$} \quad eliminate $B$
+
+  \begin{minipage}{0.4\textwidth}
+    \centering
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{c |c|c|}
+      \multicolumn{1}{c}{} & \multicolumn{1}{c}{$X$} & \multicolumn{1}{c}{$Y$} \\
+      \cline{2-3}
+      $A$ & $4, 2$ & $1, 3$ \\
+      \cline{2-3}
+    \end{tabular}
+  \end{minipage}\hfill\begin{minipage}{0.6\textwidth}
+    $X$ is strictly dominated.
+  \end{minipage}
+
+  \hspace{0.20\textwidth} \scalebox{2}{$\downarrow$} \quad eliminate $X$
+
+  \begin{minipage}{0.4\textwidth}
+    \centering
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{c |c|}
+      \multicolumn{1}{c}{} & \multicolumn{1}{c}{$Y$} \\
+      \cline{2-2}
+      $A$ & $1, 3$ \\
+      \cline{2-2}
+    \end{tabular}
+  \end{minipage}\hfill\begin{minipage}{0.6\textwidth}
+    Is this an NE?
+    (Yes.)
+  \end{minipage}
+\end{ex}
+
+IESDS: Repeatedly eliminate strictly dominated strategies until we have only one strategy profile.
+We claim that if this works, then the surviving profile is the unique NE of the game.
+
+\begin{ex}[Example: facility location game]
+  Two firms are each given a permit to open one store in one of six towns along a highway.
+  Firm I can open in A, C, or E; Firm II can open in B, D, or F.
+
+  \begin{center}
+    \begin{forest}
+      for tree={{grow=east, circle, draw}}
+      [A [B [C [D [E [F]]]]]]
+    \end{forest}
+  \end{center}
+
+  Assume towns are equally spaced and equally populated.
+  Customers in a town will go to the closest store.
+  Where should the firms open the stores?
+
+  Apply IESDS:
+
+  \begin{minipage}{0.5\textwidth}
+    \centering
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{c c |c|c|c|}
+      \multicolumn{2}{c}{} & \multicolumn{3}{c}{Firm II} \\
+      \multicolumn{2}{c}{} & \multicolumn{1}{c}{B} & \multicolumn{1}{c}{D}
+        & \multicolumn{1}{c}{F} \\
+      \cline{3-5}
+      \multirow{3}{*}{Firm I} & A & $1, 5$ & $2, 4$ & $3, 3$ \\
+      \cline{3-5}
+      & C & $4, 2$ & $3, 3$ & $4, 2$ \\
+      \cline{3-5}
+      & E & $3, 3$ & $2, 4$ & $5, 1$ \\
+      \cline{3-5}
+    \end{tabular}
+  \end{minipage}\hfill\begin{minipage}{0.5\textwidth}
+    Firm I: A is strictly dominated by C.
+
+    Firm II: F is strictly dominated by D.
+  \end{minipage}
+
+  \hspace{0.3\textwidth} \scalebox{2}{$\downarrow$} \quad eliminate A and F
+
+  \begin{minipage}{0.5\textwidth}
+    \centering
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{c c |c|c|}
+      \multicolumn{2}{c}{} & \multicolumn{2}{c}{Firm II} \\
+      \multicolumn{2}{c}{} & \multicolumn{1}{c}{B} & \multicolumn{1}{c}{D} \\
+      \cline{3-4}
+      \multirow{2}{*}{Firm I} & C & $4, 2$ & $3, 3$ \\
+      \cline{3-4}
+      & E & $3, 3$ & $2, 4$ \\
+      \cline{3-4}
+    \end{tabular}
+  \end{minipage}\hfill\begin{minipage}{0.5\textwidth}
+    Firm I: E is strictly dominated by C.
+
+    Firm II: B is strictly dominated by D.
+  \end{minipage}
+
+  \hspace{0.3\textwidth} \scalebox{2}{$\downarrow$} \quad eliminate B and E
+
+  \begin{minipage}{0.5\textwidth}
+    \centering
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{c c |c|}
+      \multicolumn{2}{c}{} & \multicolumn{1}{c}{Firm II} \\
+      \multicolumn{2}{c}{} & \multicolumn{1}{c}{D} \\
+      \cline{3-3}
+      \multirow{1}{*}{Firm I} & C & $3, 3$ \\
+      \cline{3-3}
+    \end{tabular}
+  \end{minipage}\hfill\begin{minipage}{0.5\textwidth}
+    (C, D) is an NE.
+  \end{minipage}
+\end{ex}
+
+Note: We can extend this to 1000 towns with alternating options.
+The two ends are strictly dominated by the centre towns.
+eliminate them to get 998 towns.
+Repeat.
+End with the two towns in the centre as the NE.
+
+\pagebreak
+\subsection{Results in IESDS}
+
+\begin{thm}{}{12.3}
+  Suppose $G$ is a strategic game.
+  If IESDS ends with only one strategy profile $s^*$, then $s^*$ is the unique Nash equilibrium of
+  $G$.
+\end{thm}
+
+This is a consequence of the following result.
+
+\begin{thm}{}{12.4}
+  Let $G$ be a strategic game where $s_i$ is a strictly dominated strategy for player $i$.
+  Let $G'$ be obtained from $G$ by removing $s'$ from $S_i$.
+  Then $s^*$ is a Nash equilibrium of $G$ if and only if $s^*$ is a Nash equilibrium of $G'$.
+\end{thm}
+
+\begin{thmproof}[Proof sketch.]
+  \begin{itemize}[leftmargin=4em]
+    \item[($\implies$)]
+      Suppose $s^*$ is an NE of $G$.
+      Since $s_i$ is strictly dominated, it cannot appear in $s^*$ (\cref{lem:12.2}).
+      So $s^*$ is a valid strategy in $G'$.
+      If $s^*$ is not an NE of $G'$, then a player can deviate to get a higher utility.
+      However, all strategies in $G'$ are available in $G$, so such a player can do it in $G$ as
+      well.
+      This contradicts $s^*$ being an NE of $G$.
+    \item[($\impliedby$)]
+      Suppose $s^*$ is an NE of $G'$.
+      Suppose $s^*$ is not an NE in $G$.
+      Then a player can deviate to get a higher utility.
+      This can be replicated in $G'$ (which results in a contradiction) unless it is player $i$
+      switching to strategy $s_i$ (the only strategy in $G$ not in $G'$).
+      Then player $i$ could switch to the strategy that strictly dominates $s_i$ (available in $G'$)
+      to get a higher utility in $G'$.
+      This contradicts $s^*$ being an NE in $G'$.
+  \end{itemize}
+\end{thmproof}
+
+%%%%% Lec 13
+\section{Weak Dominance}
+
+\begin{defn}{weak dominance}{weak_dominance}
+  For two strategies $s_i^{(1)}, s_i^{(2)} \in S_i$ for player $i$, we say that $s_i^{(1)}$
+  \hldef{weakly dominates} $s_i^{(2)}$ if for all $s_{-i} \in S_{-i}$,
+  $u_i(s_i^{(1)}, s_{-i}) \geq u_i(s_i^{(2)}, s_{-i})$, and this equality is strict for at least one
+  $s_{-i} \in S_{-i}$.
+
+  If there exists a strategy that weakly dominates $s_i$, then $s_i$ is
+  \hldef{weakly dominated}.
+  If $s_i$ weakly dominates all strategies $s_i^\prime \in S_i \setminus \{ s_i \}$, then $s_i$ is
+  a \hldef{weakly dominating strategy}.
+\end{defn}
+
+\begin{ex}
+  Consider this strategic game:
+  \begin{center}
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{c |c|c|c|}
+      \multicolumn{1}{c}{} & \multicolumn{1}{c}{$X$} & \multicolumn{1}{c}{$Y$}
+        & \multicolumn{1}{c}{$Z$} \\
+      \cline{2-4}
+      $A$ & $3, 3$ & $1, 1$ & $4, 1$ \\
+      \cline{2-4}
+      $B$ & $2, 1$ & $0, 1$ & $3, 1$ \\
+      \cline{2-4}
+    \end{tabular}
+  \end{center}
+
+  $Z$ is weakly dominated by $X$ since $u_2(A, X) > u_2(A, Z)$ and $u_2(B, X) \geq u_2(B, Z)$.
+
+  $Z$ is not weakly dominated by $Y$ since there is no case with strict inequality.
+\end{ex}
+
+\pagebreak
+\subsection{Iterated elimination of weakly dominated strategies (IEWDS)}
+
+Remove weakly dominated strategies until there is only one strategy profile.
+
+\begin{ex}
+  \begin{minipage}{0.4\textwidth}
+    \centering
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{c |c|c|c|}
+      \multicolumn{1}{c}{} & \multicolumn{1}{c}{$X$} & \multicolumn{1}{c}{$Y$}
+        & \multicolumn{1}{c}{$Z$} \\
+      \cline{2-4}
+      $A$ & $3, 3$ & $1, 1$ & $4, 1$ \\
+      \cline{2-4}
+      $B$ & $2, 1$ & $0, 1$ & $3, 1$ \\
+      \cline{2-4}
+    \end{tabular}
+  \end{minipage}\hfill\begin{minipage}{0.6\textwidth}
+    $Y$ and $Z$ are weakly dominated by $X$.
+  \end{minipage}
+
+  \hspace{0.2\textwidth} \scalebox{2}{$\downarrow$} \quad eliminate $Y$ and $Z$
+
+  \begin{minipage}{0.4\textwidth}
+    \centering
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{c |c|}
+      \multicolumn{1}{c}{} & \multicolumn{1}{c}{$X$} \\
+      \cline{2-2}
+      $A$ & $3, 3$ \\
+      \cline{2-2}
+      $B$ & $2, 1$ \\
+      \cline{2-2}
+    \end{tabular}
+  \end{minipage}\hfill\begin{minipage}{0.6\textwidth}
+    $B$ is weakly dominated by $A$.
+  \end{minipage}
+
+  \hspace{0.2\textwidth} \scalebox{2}{$\downarrow$} \quad eliminate $B$
+
+  \begin{minipage}{0.4\textwidth}
+    \centering
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{c |c|}
+      \multicolumn{1}{c}{} & \multicolumn{1}{c}{$X$} \\
+      \cline{2-2}
+      $A$ & $3, 3$ \\
+      \cline{2-2}
+    \end{tabular}
+  \end{minipage}\hfill\begin{minipage}{0.6\textwidth}
+    $(A, X)$ is an NE.
+  \end{minipage}
+\end{ex}
+
+\begin{thm}{}{13.1}
+  Suppose $G$ is a strategic game.
+  If IEWDS ends with only one strategy profile $s^*$, then $s^*$ is a Nash equilibrium of $G$.
+\end{thm}
+
+Note: Compare with \cref{thm:12.3}: here, we can no longer claim that the NE is unique.
+A different sequence of eliminations can result in a different NE.
+
+\begin{ex}
+  In the payoff table above, eliminating $Y$ then $B$ then $X$ gives a different NE, $(A, Z)$.
+\end{ex}
+
+Key difference: unlike strictly dominated strategies, weakly dominated strategies can appear in an
+NE.
+
+\begin{minipage}{0.6\textwidth}
+  Some NE cannot be found through IEWDS: \emph{e.g.}, Bach or Stravinsky has no weakly dominated
+  strategies.
+\end{minipage}\hfill\begin{minipage}{0.4\textwidth}
+  \centering
+  \renewcommand{\arraystretch}{1.25}
+  \begin{tabular}{c |c|c|}
+    \multicolumn{1}{c}{} & \multicolumn{1}{c}{B} & \multicolumn{1}{c}{S} \\
+    \cline{2-3}
+    B & $2, 1$ & $0, 0$ \\
+    \cline{2-3}
+    S & $0, 0$, & $2, 1$ \\
+    \cline{2-3}
+  \end{tabular}
+\end{minipage}
+
+\pagebreak
+\subsection{Weakly dominating strategies}
+
+Just like strictly dominating strategies, weakly dominating strategies are good to play.
+
+\begin{lem}{}{13.2}
+  If for all players $i$, $s_i^*$ is a weakly dominating strategy, then $s^*$ is a Nash equilibrium.
+\end{lem}
+
+%%%%% Lec 14
+\section{Auctions}
+
+Setup of an auction: A seller puts one item up for an auction.
+Potential buyers put in bids to buy the item.
+The seller decides who wins (usually highest bidder) and the price they pay.
+
+Typical auction: open bid auction.
+Buyers bid repeatedly until no one else bids.
+Highest bid wins and pays their bid price.
+
+Another type: closed bid auction.
+Each buyer submits one secret bid to the seller.
+(Easier to analyze.)
+
+First price auction: highest bid wins, winner pays their bid.
+(If three bidders bid 150, 100, and 200, the third bidder wins and pays 200.)
+Does this simulate an open auction?
+No---in the open auction setting, the winner will bid slightly over 150 and win, so they would
+actually pay closer to 150.
+
+Second price auction: highest bid wins, winner pays second highest bid.
+(If three bidders bid 150, 100, and 200, the third bidder wins and pays 150.)
+This better simulates an open auction.
+
+We will analyze second price closed bid auctions.
+
+Setup: we have buyers $N = \{ 1, \ldots, n \}$.
+Buyer $i$ thinks the item has value $v_i$ (``valuation'').
+Suppose buyer $i$ submits bid $b_i$, giving strategy profile $b = (b_1, \ldots, b_n)$.
+The winner is the buyer who submits the highest bid; they pay a price equal to the second highest
+bid.
+If there is a tie, then the winner is the buyer with the lowest index $i$ among all tied buyers.
+
+Given a strategy profile $b$, the utility for buyer $i$ is
+\[
+  u_i(b) = \begin{cases}
+    v_i - \displaystyle\max_{j \neq i} b_j \qquad & i \text{ wins in } b \\
+    0 & \text{otherwise}
+  \end{cases}.
+\]
+
+Suppose your valuation of the item is 100.
+Would you bid anything other than 100?
+\begin{enumcase}
+  \item
+    Your bid wins.
+    \[
+      24, \ 69, \ 75, \ \mathbf{100}
+    \]
+    Pay 75, get utility 25.
+
+    If you bid more than 75, you still win, you still pay 75.
+    If you bid less than 75, you lose and get utility 0.
+  \item
+    Your bid loses.
+    \[
+      24, \ 69, \ 75, \ \mathbf{100}, \ 121
+    \]
+    Your utility is 0.
+
+    If you bid less than 121, you still lose and you still get utility 0.
+    If you bid more than 121, you win, but you pay 121 and get utility $-21$.
+\end{enumcase}
+In all cases, your utility does not increase if you bid anything else than your valuation.
+
+\begin{thm}{}{14.1}
+  In the second price auction, $v_i$ is a weakly dominating strategy for player $i \in N$.
+\end{thm}
+
+\begin{thmproof}
+  We first show that $u_i(v_i, b_{-i}) \geq u_i(b_i, b_{-i})$ for all $b_i \in S_i$ and
+  $b_{-i} \in S_{-i}$.
+  There are two cases.
+  \begin{enumcase}
+    \item
+      $v_i$ is a winning bid in $(v_i, b_{-i})$.
+
+      Let $b_j$ be the second highest bid (which could equal $v_i$).
+      The utility for player $i$ is $u_i(v_i, b_{-i}) = v_i - b_j \geq 0$.
+      Suppose player $i$ changes their bid to $b_i$.
+
+      If $b_i > b_j$ or ($b_i = b_j$ and $i < j$), then $b_i$ is still the winning bid in
+      $(b_i, b_{-i})$.
+      Payment is still $b_j$, so the utility remains the same.
+
+      Otherwise, $b_i$ is a losing bid, so the utility is 0, which is at most $u_i(v_i, b_{-i})$.
+
+      So $u_i(v_i, b_{-i}) \geq u_i(b_i, b_{-i})$ for any $b_i$.
+    \item
+      $v_i$ is a losing bid in $(v_i, b_{-i})$.
+
+      Let $b_j$ be the winning bid (so $b_j \geq v_i$).
+      The utility for player $i$ is $u_i(v_i, b_{-i}) = 0$.
+      Suppose player $i$ changes their bid to $b_i$.
+
+      If $b_i < b_j$ or ($b_i = b_j$ and $i > j$), then $b_i$ is still a losing bid in
+      $(b_i, b_{-i})$.
+      The utility is still 0.
+
+      Otherwise, $b_i$ is a winning bid with payment $b_j$.
+      The utility is $u_i(b_i, b_{-i}) = v_i - b_j \leq 0$ (since $b_j \geq v_i$).
+
+      So $u_i(v_i, b_{-i}) \geq u_i(b_i, b_{-i})$.
+  \end{enumcase}
+  In both cases, bidding $v_i$ gives the highest utility among all possible bids of player $i$.
+
+  We still need to show that for all $b_i \neq v_i$, there exists $s_{-i} \in S_{-i}$ such that
+  $u_i(v_i, b_{-i}) > u_i(b_i, b_{-i})$.
+  There are two cases.
+  \begin{enumcase}
+    \item
+      Suppose $b_i < v_i$.
+
+      Let $k$ be in $b_i < k < v_i$.
+      Set $b_j = k$ for all $j \neq i$.
+      When $v_i$ is played against $b_{-i}$, player $i$ wins ($v_i > k$) and pays $k$.
+      The utility is then $u_i(v_i, b_{-i}) = v_i - k > 0$.
+      When $b_i$ is played against $b_{-i}$, player $i$ loses ($b_i < k$) and the utility is
+      $u_i(b_i, b_{-i}) = 0$.
+      So $u_i(v_i, b_{-i}) > u_i(b_i, b_{-i})$.
+    \item
+      Suppose $b_i > v_i$.
+
+      Let $k$ be in $v_i < k < b_i$.
+      Set $b_j = k$ for all $j \neq i$.
+      When $v_i$ is played against $b_{-i}$, player $i$ loses ($v_i < k$) and the utility is
+      $u_i(v_i, b_{-i}) = 0$.
+      When $b_i$ is played against $b_{-i}$, player $i$ wins ($b_i > k$) and pays $k$.
+      The utility is $u_i(b_i, b_{-i}) = v_i - k < 0$.
+      So $u_i(v_i, b_{-i}) > u_i(b_i, b_{-i})$.
+  \end{enumcase}
+  Therefore, playing $v_i$ is a weakly dominating strategy.
+\end{thmproof}
+
+Note: The way we play this game does not depend on knowing how other players value the item, so it
+is easy to play---simply bid your valuation.
+
+Usually, strategic games require you to know all the information to play perfectly.
+However, this game does not.
+
+\begin{exer}{}{14.2}
+  Suppose buyer 1 has the highest valuation $v_1$ and buyer 2 has the second highest valuation
+  $v_2$.
+  Show that $(v_2, v_1, 0, 0, \ldots, 0)$ is a NE.
+\end{exer}
 
 %---------------
 \end{document}
