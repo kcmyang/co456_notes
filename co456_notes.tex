@@ -1690,7 +1690,7 @@ This is a consequence of the following result.
 
 \begin{thm}{}{12.4}
   Let $G$ be a strategic game where $s_i$ is a strictly dominated strategy for player $i$.
-  Let $G'$ be obtained from $G$ by removing $s'$ from $S_i$.
+  Let $G'$ be obtained from $G$ by removing $s_i$ from $S_i$.
   Then $s^*$ is a Nash equilibrium of $G$ if and only if $s^*$ is a Nash equilibrium of $G'$.
 \end{thm}
 
@@ -1722,8 +1722,8 @@ This is a consequence of the following result.
 \begin{defn}{weak dominance}{weak_dominance}
   For two strategies $s_i^{(1)}, s_i^{(2)} \in S_i$ for player $i$, we say that $s_i^{(1)}$
   \hldef{weakly dominates} $s_i^{(2)}$ if for all $s_{-i} \in S_{-i}$,
-  $u_i(s_i^{(1)}, s_{-i}) \geq u_i(s_i^{(2)}, s_{-i})$, and this equality is strict for at least one
-  $s_{-i} \in S_{-i}$.
+  $u_i(s_i^{(1)}, s_{-i}) \geq u_i(s_i^{(2)}, s_{-i})$, and this inequality is strict for at least
+  one $s_{-i} \in S_{-i}$.
 
   If there exists a strategy that weakly dominates $s_i$, then $s_i$ is
   \hldef{weakly dominated}.
@@ -1811,7 +1811,7 @@ Remove weakly dominated strategies until there is only one strategy profile.
   If IEWDS ends with only one strategy profile $s^*$, then $s^*$ is a Nash equilibrium of $G$.
 \end{thm}
 
-Note: Compare with \cref{thm:12.3}: here, we can no longer claim that the NE is unique.
+Note: Compare with \cref{thm:12.3}---here, we can no longer claim that the NE is unique.
 A different sequence of eliminations can result in a different NE.
 
 \begin{ex}
