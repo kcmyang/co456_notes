@@ -1993,6 +1993,529 @@ However, this game does not.
   Show that $(v_2, v_1, 0, 0, \ldots, 0)$ is a NE.
 \end{exer}
 
+%%%%% Lec 15
+\section{Mixed Strategies}
+
+\subsection{Definitions}
+
+\begin{ex}[Example: matching pennies]
+  Two players each have a penny.
+  They simultaneously show heads or tails.
+  If they match, then player I gains the penny from player II.
+  If they don't match, then player II gets the penny from player I.
+
+  \begin{center}
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{c c|c|c|}
+      \multicolumn{2}{c}{} & \multicolumn{2}{c}{P II} \\
+      \multicolumn{2}{c}{} & \multicolumn{1}{c}{H} & \multicolumn{1}{c}{T} \\
+      \cline{3-4}
+      \multirow{2}{*}{P I} & H & $1, -1$ & $-1, 1$ \\
+      \cline{3-4}
+      & T & $-1, 1$ & $1, -1$ \\
+      \cline{3-4}
+    \end{tabular}
+  \end{center}
+
+  There is no Nash equilibrium here (in the way described so far).
+
+  Let's allow the players to play this probabilistically.
+  For example, player I might play H $1/3$ of the time and T $2/3$ of the time.
+  Player II might play $3/4$ on H and $1/4$ on T.
+
+  Is there an equilibrium here?
+  If player I plays $1/3$ H and $2/3$ T, then player II wants to play H more often than T.
+  Then player I wants to play H more often than T.
+  Then player II wants to play T more often than H, etc.
+  It seems the strategy profile is stable only if both players play $1/2$ H and $1/2$ T.
+\end{ex}
+
+\begin{defn}{mixed strategy, mixed strategy profile}{mixed_strategy}
+  A \hldef{mixed strategy} for player $i$ is a vector $x^i \in \mathbb{R}_+^{S_i}$ such that
+  $\sum\limits_{s \in S_i} x_s^i = 1$ (intuition: a probability distribution over possible
+  strategies).
+
+  The set of all mixed strategies for player $i$ is denoted $\Delta^i$.
+
+  A \hldef{mixed strategy profile} is a vector $x = (x^1, \ldots, x^n)$ where $x^i \in \Delta^i$ is
+  a mixed strategy for player $i$.
+
+  The set of all mixed strategy profiles is denoted
+  $\Delta = \Delta^1 \times \cdots \times \Delta^n$.
+
+  The mixed strategy profile with player $i$ removed is $x^{-i} \in \Delta^{-i}$.
+\end{defn}
+
+Notes:
+\begin{enumerate}
+  \item
+  If we play a strategy with probability 1, then it is a \hldef{pure strategy} (this is the
+  way we've played games before this lecture).
+  \item
+  As convention for this course, we use $s$'s to represent pure strategies and $x$'s to represent
+  mixed strategies.
+\end{enumerate}
+
+\begin{ex}
+  In matching pennies, if we order the pure strategies in the order (H, T), then we had
+  $x^1 = (x_\text{H}^1, x_\text{T}^1) = (\frac{1}{3}, \frac{3}{3})$ and
+  $x^2 = (x_\text{H}^2, x_\text{T}^2) = (\frac{3}{4}, \frac{1}{4})$ as mixed strategies.
+
+  The (mixed) strategy profile is
+  $x = (x^1, x^2) = ((\frac{1}{3}, \frac{2}{3}), (\frac{3}{4}, \frac{1}{4}))$.
+\end{ex}
+
+\subsection{Why mixed strategies?}
+
+\begin{enumerate}
+  \item
+  Introduce unpredictability in games that are played repeatedly.
+  Examples: in penalty kicks, you do not always want to kick to the same side; in politics, you do
+  not always want to make major announcements on Tuesdays.
+  \item
+  Think of a player as representing a population, with probability of a strategy being proportional
+  to the portion of the population who prefer it.
+  Example: say 55\% like donkeys and 45\% like elephants, then perhaps there will be more donkeys in
+  zoos.
+\end{enumerate}
+
+\pagebreak
+\subsection{Utility}
+
+We will use expected value as utility.
+
+\begin{ex}
+  Consider matching pennies again, with strategies $x^1 = (\frac{1}{3}, \frac{2}{3})$ and
+  $x^2 = (\frac{3}{4}, \frac{1}{4})$.
+
+  \begin{center}
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{c c|c|c|}
+      \multicolumn{2}{c}{} & \multicolumn{2}{c}{P II} \\
+      \multicolumn{2}{c}{} & \multicolumn{1}{c}{H} & \multicolumn{1}{c}{T} \\
+      \cline{3-4}
+      \multirow{2}{*}{P I} & H & $1, -1$ & $-1, 1$ \\
+      \cline{3-4}
+      & T & $-1, 1$ & $1, -1$ \\
+      \cline{3-4}
+    \end{tabular}
+  \end{center}
+
+  Two cases for player I:
+  \begin{enumerate}
+    \item
+    If player I plays H as a pure strategy, then we get 1 with $3/4$ chance and $-1$ with $1/4$
+    chance; expected utility is $3/4 \cdot 1 + 1/4 \cdot (-1) = 1/2$.
+    \item
+    If player I plays T as a pure strategy, then we get $-1$ with $3/4$ chance and 1 with $1/4$
+    chance; expected utility is $3/4 \cdot (-1) + 1/4 \cdot 1 = -1/2$.
+  \end{enumerate}
+  Overall, player I plays H $1/3$ of the time and T $2/3$ of the time.
+  So the expected utility is $1/3 \cdot (1/2) + 2/3 \cdot (-1/2) = -1/6$.
+\end{ex}
+
+\begin{defn}{expected utility}{expected_utility}
+  We are given a strategy profile $x = (x^1, \ldots, x^n) \in \Delta$.
+  The \hldef{expected utility of a pure strategy} $s_i \in S_i$ for player $i$ is
+  \[
+    u_i(s_i, x^{-i}) = \sum_{s_i \in S_i} u_i(s_i, s_{-i}) \prod_{j \neq i} x_{s_j}^j
+  \]
+  where $u_i(s_i, s_{-i})$ is the utility from the pure strategy game.
+
+  The \hldef{expected utility} of player $i$ in $x$ is
+  \[
+    u_i(x) = \sum_{s_i \in S_i} x_{s_i}^i \cdot u_i(s_i, x^{-i}).
+  \]
+\end{defn}
+
+\begin{ex}
+  For matching pennies above, $u_1(\text{H}, x^2) = \frac{1}{2}$,
+  $u_1(\text{T}, x^2) = \frac{-1}{2}$, and $u_1(x) = \frac{-1}{6}$.
+\end{ex}
+
+\begin{ex}
+  Suppose 3 players each make a choice between $A$ and $B$.
+  A \$1 prize is split among players who pick the majority choice.
+  Suppose $x^1 = (p, 1 - p)$, $x^2 = (\frac{1}{2}, \frac{1}{2})$, and
+  $x^3 = (\frac{2}{5}, \frac{3}{5})$.
+  What is the expected utility for player I?
+
+  When player I plays $A$, there are 4 cases:
+  \begin{itemize}
+    \item
+    $u_1(A, A, A) = \frac{1}{3}$ with probability
+    $x_A^2 \cdot x_A^3 = \frac{1}{2} \cdot \frac{2}{5} = \frac{1}{5}$.
+    \item
+    $u_1(A, A, B) = \frac{1}{2}$ with probability
+    $x_A^2 \cdot x_B^3 = \frac{1}{2} \cdot \frac{3}{5} = \frac{3}{10}$.
+    \item
+    $u_1(A, B, A) = \frac{1}{2}$ with probability
+    $x_B^2 \cdot x_A^3 = \frac{1}{2} \cdot \frac{2}{5} = \frac{1}{5}$.
+    \item
+    $u_1(A, B, B) = 0$ with some probability (not relevant for calculations).
+  \end{itemize}
+  The utility for playing $A$ is
+  $u_1(A, x^{-1}) = \frac{1}{5} \cdot \frac{1}{3} + \frac{3}{10} \cdot \frac{1}{2} +
+    \frac{1}{5} \cdot \frac{1}{2} + 0 = \frac{19}{60}$.
+
+  The utility for playing $B$ is $\frac{7}{20}$ (check this).
+
+  The expected utility for player I is $u_1(x) = p \cdot \frac{19}{60} + (1 - p) \cdot \frac{7}{20}
+    = \frac{7}{20} - \frac{1}{15} p$.
+
+  It would make sense to pick $p = 0$, so player I always picks $B$.
+  (Player III is more likely to pick $B$, letting us form a majority more often.)
+\end{ex}
+
+%%%%% Lec 16
+\section{Mixed Equilibria}
+
+\subsection{Definitions}
+
+\begin{defn}{mixed Nash equilibrium}{mixed_nash_equilibrium}
+  A mixed strategy profile $\overline{x} \in \Delta$ is a \hldef{mixed Nash equilbrium} if for each
+  player $i \in N$, $u_i(\overline{x}) \geq u_i(x^i, \overline{x}^{-i})$ for all $x^i \in \Delta^i$.
+
+  (We often omit the word ``mixed'', so it is also a Nash equilibrium.)
+\end{defn}
+
+\begin{defn}{best response function}{best_response_function_mixed}
+  Given a profile $\overline{x}^{-i} \in \Delta^{-i}$, the \hldef{best response function} for player
+  $i$, $B_i(\overline{x}^{-i})$, is the set of all mixed strategies of player $i$ that have maximum
+  utility against $\overline{x}^{-i}$, \emph{i.e.,}
+  $B_i(\overline{x}^{-i}) = \{ \overline{x}^i \in \Delta^i : u_i(\overline{x}^i, \overline{x}^{-i})
+    \geq u_i(x^i, \overline{x}^{-i}) \ \forall x^i \in \Delta^i \}$.
+\end{defn}
+
+\begin{prop}{}{16.1}
+  $\overline{x} = (\overline{x}^1, \ldots, \overline{x}^n) \in \Delta$ is a Nash equilibrium if and
+  only if $\overline{x}^i \in B_i(\overline{x}^{-i})$ for all $i \in N$.
+\end{prop}
+
+\begin{ex}[Example: matching pennies]
+  \begin{center}
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{c c|c|c|}
+      \multicolumn{2}{c}{} & \multicolumn{2}{c}{P II} \\
+      \multicolumn{2}{c}{} & \multicolumn{1}{c}{H} & \multicolumn{1}{c}{T} \\
+      \cline{3-4}
+      \multirow{2}{*}{P I} & H & $1, -1$ & $-1, 1$ \\
+      \cline{3-4}
+      & T & $-1, 1$ & $1, -1$ \\
+      \cline{3-4}
+    \end{tabular}
+  \end{center}
+
+  Suppose $x^1 = (p, 1 - p)$ and $x^2 = (q, 1 - q)$.
+
+  For player I, the expected utility for playing H is $q \cdot 1 + (1 - q) \cdot (-1) = 2q - 1$.
+  The expected utility for playing T is $q \cdot (-1) + (1 - q) \cdot q = 1 - 2q$.
+  Utility for player I is $p \cdot (2q - 1) + (1 - p) \cdot (1 - 2q) = p(-2 + 4q) + (1 - 2q)$.
+
+  Given $q$, which $p$ maximizes this utility?
+  Here, $1 - 2q$ is constant, so we maximize $p(-2 + 4q)$. Three cases:
+  \begin{enumerate}
+    \item
+    If $q < \frac{1}{2}$, then $-2 + 4q < 0$.
+    Maximize with $p = 0$.
+    \item
+    If $q = \frac{1}{2}$, then $-2 + 4q = 0$.
+    Then any $p$ maximizes it, so $p \in [0, 1]$.
+    \item
+    If $q > \frac{1}{2}$, then $-2 + 4q > 0$.
+    Maximize with $p = 1$.
+  \end{enumerate}
+  The BRF for player I is:
+  \[
+    B_1(x^2) = \begin{cases}
+      \{ (0, 1) \} & \text{if } \ q < \frac{1}{2} \\
+      \{ (p, 1 - p) : p \in [0, 1] \} \quad & \text{if } \ q = \frac{1}{2} \\
+      \{ (1, 0) \} & \text{if } \ q > \frac{1}{2} \\
+    \end{cases}
+  \]
+
+  For player II, the utility is $q(2 - 4p) + (2p - 1)$ (check this).
+  Divide cases with $p = \frac{1}{2}$ like above.
+  The BRF for player II is:
+  \[
+    B_2(x^1) = \begin{cases}
+      \{ (1, 0) \} & \text{if } \ p < \frac{1}{2} \\
+      \{ (q, 1 - q) : q \in [0, 1] \} \quad & \text{if } \ p = \frac{1}{2} \\
+      \{ (0, 1) \} & \text{if } \ p > \frac{1}{2} \\
+    \end{cases}
+  \]
+
+  We look for $p, q$ such that $x^1, x^2$ are best responses to each other.
+  In this example, we can draw $B_1, B_2$ on a ``graph''.
+
+  \begin{center}
+    \begin{tikzpicture}[scale=4]
+      \draw[line width=1pt, ->] (0,0) -- (0,1.25);
+      \draw[line width=1pt, ->] (0,0) -- (1.25,0);
+
+      \draw[line width=2pt, color=blue] (0,0) -- (0,0.5) -- (1,0.5) -- (1,1);
+      \draw[line width=2pt, color=red] (0,1) -- (0.5,1) -- (0.5,0) -- (1,0);
+
+      \node[below left] at (0,0) {0};
+      \node[left] at (0,1) {1};
+      \node[below] at (1,0) {1};
+
+      \node[above] at (0,1.25) {$q$};
+      \node[right] at (1.25,0) {$p$};
+
+      \node[right, color=blue] at (1,1) {$B_1$};
+      \node[above right, color=red] at (1,0) {$B_2$};
+
+      \node[draw, circle, fill=black, inner sep=0pt, minimum size=6pt] at (0.5,0.5) {};
+      \node[below right] at (0.5,0.5) {$p = \frac{1}{2}, q = \frac{1}{2}$};
+    \end{tikzpicture}
+  \end{center}
+
+  The intersection of $B_1$ and $B_2$ is where they are best responses simultaneously, hence a Nash
+  equilibrium.
+  In this case, we have $x^1 = (\frac{1}{2}, \frac{1}{2})$ and $x^2 = (\frac{1}{2}, \frac{1}{2})$
+  and $(x^1, x^2)$ is an NE.
+\end{ex}
+
+\pagebreak
+\begin{ex}[Example: Bach or Stravinsky]
+  \begin{center}
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{c |c|c|}
+      \multicolumn{1}{c}{} & \multicolumn{1}{c}{B} & \multicolumn{1}{c}{S} \\
+      \cline{2-3}
+      B & $2, 1$ & $0, 0$ \\
+      \cline{2-3}
+      S & $0, 0$, & $2, 1$ \\
+      \cline{2-3}
+    \end{tabular}
+  \end{center}
+
+  Suppose $x^1 = (p, 1 - p)$ and $x^2 = (q, 1 - q)$.
+
+  Then $u_1(B, x^2) = 2q$ and $u_1(S, x^2) = 1 - q$.
+  So $u_1(x) = p \cdot 2q + (1 - p) \cdot (1 - q) = p(-1 + 3q) + (1 - q)$.
+  Break into cases depending on $q = \frac{1}{3}$.
+  The BRF is:
+  \[
+    B_1(x^2) = \begin{cases}
+      \{ (0, 1) \} & \text{if } \ q < \frac{1}{3} \\
+      \{ (p, 1 - p) : p \in [0, 1] \} & \text{if } \ q = \frac{1}{3} \\
+      \{ (1, 0) \} & \text{if } \ q > \frac{1}{3} \\
+    \end{cases}
+  \]
+
+  For player II, $u_2(x) = q(-2 + 3p) + 2 - 2p$.
+  Break into cases depending on $p = \frac{2}{3}$.
+  The BRF is:
+  \[
+    B_2(x^1) = \begin{cases}
+      \{ (0, 1) \} & \text{if } \ p < \frac{2}{3} \\
+      \{ (q, 1 - q) : q \in [0, 1] \} & \text{if } \ p = \frac{2}{3} \\
+      \{ (1, 0) \} & \text{if } \ p > \frac{2}{3} \\
+    \end{cases}
+  \]
+
+  The ``graph'' here is:
+  \begin{center}
+    \begin{tikzpicture}[scale=4]
+      \draw[line width=1pt, ->] (0,0) -- (0,1.25);
+      \draw[line width=1pt, ->] (0,0) -- (1.25,0);
+
+      \draw[line width=2pt, color=blue] (0,0) -- (0,0.33) -- (1,0.33) -- (1,1);
+      \draw[line width=2pt, color=red] (0,0) -- (0.67,0) -- (0.67,1) -- (1,1);
+
+      \node[below left] at (0,0) {0};
+      \node[left] at (0,1) {1};
+      \node[below] at (1,0) {1};
+
+      \node[above] at (0,1.25) {$q$};
+      \node[right] at (1.25,0) {$p$};
+
+      \node[below right, color=blue] at (1,1) {$B_1$};
+      \node[above left, color=red] at (1,1) {$B_2$};
+
+      \node[draw, circle, fill=black, inner sep=0pt, minimum size=6pt] at (0,0) {};
+      \node[below right] at (0,0) {$p = 0, q = 0$};
+      \node[draw, circle, fill=black, inner sep=0pt, minimum size=6pt] at (0.67,0.33) {};
+      \node[below right] at (0.67,0.33) {$p = \frac{2}{3}, q = \frac{1}{3}$};
+      \node[draw, circle, fill=black, inner sep=0pt, minimum size=6pt] at (1,1) {};
+      \node[above right] at (1,1) {$p = 1, q = 1$};
+    \end{tikzpicture}
+  \end{center}
+
+  There are 3 NE here:
+  \begin{itemize}
+    \item 2 pure strategies: $((0, 1), (0, 1))$ and $((1, 0), (1, 0))$
+    \item 1 mixed strategy: $((\frac{2}{3}, \frac{1}{3}), (\frac{1}{3}, \frac{2}{3}))$
+  \end{itemize}
+\end{ex}
+
+With two players, it is easy to find Nash equilibria; with more players, in general it is not easy.
+
+%%%%% Lec 17
+\section{Support Characterization}
+
+Recall: BRF maximizes a player's utility $u_i(x) = \sum\limits_{s \in S_i} x_s^i u_i(s, x^{-i})$.
+
+Suppose $\overline{x}^{-i}$ is fixed.
+Which $x^i \in \Delta^i$ maximizes $u_i(x^i, \overline{x}^{-i})$?
+Write an LP:
+
+\begin{minipage}{0.9\textwidth}
+  \begin{align*}
+    \max \quad \sum_{s \in S_i} x_s^i &u_i(s, \overline{x}^{-i}) \\
+    \text{s.t.} \quad \sum_{s \in S_i} x_s^i &= 1 \\
+    x^i &\geq \mathbb{0} \\
+  \end{align*}
+\end{minipage}\hfill\begin{minipage}{0.05\textwidth}
+  (P)
+\end{minipage}
+
+Variables: $x_s^i$ for each $s \in S_i$.
+What is the dual?
+We have one constraint in (P), so one dual variable $y$.
+
+\begin{minipage}{0.9\textwidth}
+  \begin{align*}
+    \min \quad y & \\
+    \text{s.t.} \quad y &\geq u_i(s, \overline{x}^{-i}) \quad \text{for all } s \in S_i \\
+  \end{align*}
+\end{minipage}\hfill\begin{minipage}{0.05\textwidth}
+  (D)
+\end{minipage}
+
+Both (P) and (D) are feasible: for (P), set $x^i$ to any probability distribution; for (D), set $y$
+to be the maximum $u_i(s, \overline{x}^{-i})$.
+Therefore, (P) and (D) have optimal solutions and their optimal values are equal.
+
+(D) is easy to solve: $y = \max\limits_{s \in S_i} u_i(s, \overline{x}^{-i})$.
+This is the maximum utility when pure strategies are played against $\overline{x}^{-i}$.
+
+(P) also has optimal value $y$.
+So the maximum utility of all mixed strategies is equal to the max utility of pure strategies.
+
+Complementary slackness conditions: $x_s^i = 0$ or $y = u_i(s, \overline{x}^{-i})$ for all
+$s \in S_i$.
+
+Equivalently, $x_s^i > 0$ implies $y = u_i(s, \overline{x}^{-i})$.
+Translation: only pure strategies with maximum utility could have positive probabilties in a best
+response.
+
+\begin{thm}{support characterization}{17.1}
+  Given $\overline{x}^{-i} \in \Delta^{-i}$, a mixed strategy $x^i \in B_i(\overline{x}^{-i})$ if
+  and only if $x_s^i > 0$ implies $s \in S_i$ is a pure strategy of maximum utility against
+  $\overline{x}^{-i}$.
+\end{thm}
+
+\begin{defn}{support}{support}
+  For a mixed strategy $x^i \in \Delta^i$, the \hldef{support} is the set of strategies with
+  positive probability in $x^i$.
+\end{defn}
+
+Rephrasing \cref{thm:17.1}: $x^i$ is in the BRF if and only if the support of $x^i$ are strategies
+with maximum utility.
+
+\begin{ex}[Example: Bach or Stravinsky]
+  \begin{center}
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{c |c|c|}
+      \multicolumn{1}{c}{} & \multicolumn{1}{c}{B} & \multicolumn{1}{c}{S} \\
+      \cline{2-3}
+      B & $2, 1$ & $0, 0$ \\
+      \cline{2-3}
+      S & $0, 0$, & $2, 1$ \\
+      \cline{2-3}
+    \end{tabular}
+  \end{center}
+
+  Suppose player II plays $x^2 = (q, 1 - q)$.
+  The utilities of player I using pure strategies are $u_1(\text{B}, x^2) = 2q$ and
+  $u_1(\text{S}, x^2) = 1 - q$.
+  Depending on $q$, the strategies with maximum utility are different.
+  \begin{enumerate}
+    \item
+    If $2q < 1 - q$, then $q < \frac{1}{3}$, and B is not in the support and gets probability 0.
+    BRF is $\{(0, 1)\}$.
+    \item
+    If $2q = 1 - q$, then $q = \frac{1}{3}$, and both B and S could be in the support.
+    Any combination works, so BRF is $\{(p, 1 - p) : p \in [0, 1]\}$.
+    \item
+    If $2q > 1 - q$, then $q > \frac{1}{3}$, and S is not in the support and gets probability 0.
+    BRF is $\{(1, 0)\}$.
+  \end{enumerate}
+  This matches the BRF we calculated in the last lecture.
+\end{ex}
+
+\begin{ex}
+  Consider a 2-player game with this payoff table:
+  \begin{center}
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{c |c|c|c|}
+      \multicolumn{1}{c}{} & \multicolumn{1}{c}{D} & \multicolumn{1}{c}{E}
+        & \multicolumn{1}{c}{F} \\
+      \cline{2-4}
+      A & $2, 2$ & $3, 3$ & $1, 1$ \\
+      \cline{2-4}
+      B & $3, 1$ & $0, 4$ & $2, 1$ \\
+      \cline{2-4}
+      C & $3, 4$, & $5, 1$ & $0, 7$ \\
+      \cline{2-4}
+    \end{tabular}
+  \end{center}
+
+  Suppose player II plays $x^2 = (0, \frac{1}{3}, \frac{1}{2})$.
+  What is $B_1(x^2)$?
+  \begin{itemize}
+    \item $u_1(A, x^2) = 0 \cdot 2 + \frac{1}{3} \cdot 3 + \frac{2}{3} \cdot 1 = \frac{5}{3}$
+    \item $u_1(B, x^2) = 0 \cdot 3 + \frac{1}{3} \cdot 0 + \frac{2}{3} \cdot 2 = \frac{4}{3}$
+    \item $u_1(C, x^2) = 0 \cdot 3 + \frac{1}{3} \cdot 5 + \frac{2}{3} \cdot 0 = \frac{5}{3}$
+  \end{itemize}
+  Playing A or C gives the maximum utility.
+  By support characterization, $x_B^1 = 0$.
+  Any distribution over $x_A^1$ and $x_C^1$ works.
+
+  The BRF is $B_1(x^2) = \{ (p, 0, 1 - p) : p \in [0, 1] \}$.
+
+  The maximum utility for player I is
+  $p \cdot \frac{5}{3} + (1 - p) \cdot \frac{5}{3} = \frac{5}{3}$, which is equal to the maximum
+  utility for a pure strategy.
+
+  Any strategy in $B_1(x^2)$ maximizes utility for player I.
+  Which of these maximizes utility for player II?
+  This will give a Nash equilibrium.
+
+  Suppose $x^1 = (p, 0, 1 - p)$.
+  Then:
+  \begin{itemize}
+    \item $u_2(D, x^1) = 4 - 2p$
+    \item $u_2(E, x^1) = 1 + 2p$
+    \item $u_2(F, x^1) = 7 - 6p$
+  \end{itemize}
+  If $x^2 = (0, \frac{1}{3}, \frac{2}{3})$ is in the best response, then E and F must have (the
+  same) maximum utility.
+  That is, $1 + 2p = 7 - 6p$ so $p = \frac{3}{4}$.
+  The utility for E and F is then $\frac{5}{2}$; the utility for D is also $\frac{5}{2}$, so E and F
+  indeed have maximum utility.
+  (So does D, but this is fine.)
+
+  So $x^1 = (\frac{3}{4}, 0, \frac{1}{4})$ and $x^2 = (0, \frac{1}{3}, \frac{2}{3})$ are best
+  responses to each other, and $(x^1, x^2)$ is a Nash equilibrium.
+\end{ex}
+
+Note: one ``algorithm'' for finding an NE is by looking at possible combinations of the supports for
+each player.
+In the example above, if we say ``suppose player I's support is \{\text{A}, \text{C}\} and player
+II's support is \{\text{E}, \text{F}\}'' then we can use support characterization to find an NE or
+prove none exist for these supports.
+Problem: this grows exponentially ($~2^k$ possible supports for each player if there are $k$ pure
+strategies), so it is not practical.
+
+\begin{exer}{}{17.2}
+  Show that in the game of rock paper scissors, both players playing $(\frac{1}{3}, \frac{1}{3},
+  \frac{1}{3})$ is the only Nash equilibrium.
+\end{exer}
+
 %---------------
 \end{document}
 %---------------

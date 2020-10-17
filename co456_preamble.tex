@@ -12,6 +12,7 @@
 \usepackage{fullpage}
 \usepackage{geometry}
 \usepackage{graphicx}
+\usepackage{bbold}
 \usepackage{mathrsfs}
 \usepackage{mathtools}
 \usepackage{multirow}
@@ -167,6 +168,26 @@
   }
   {cor} % label prefix
 \crefname{cor}{Corollary}{Corollaries}
+
+\newtcbtheorem[use counter from=thm]
+  {prop} % environment name
+  {Proposition} % display name
+  { % options
+    colback=blue!10,
+    colframe=blue!10,
+    colbacktitle=blue!10,
+    coltitle=blue!60!black,
+    fonttitle=\sffamily\bfseries,
+    sharp corners,
+    boxsep=1ex,
+    toptitle=1ex,
+    before skip=\baselineskip,
+    after skip=\baselineskip,
+    separator sign={~---},
+    label type={prop}
+  }
+  {prop} % label prefix
+\crefname{prop}{Proposition}{Propositions}
 
 \newtcbtheorem[use counter from=thm]
   {exer} % environment name
