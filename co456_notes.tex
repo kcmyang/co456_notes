@@ -2118,7 +2118,7 @@ We will use expected value as utility.
   We are given a strategy profile $x = (x^1, \ldots, x^n) \in \Delta$.
   The \hldef{expected utility of a pure strategy} $s_i \in S_i$ for player $i$ is
   \[
-    u_i(s_i, x^{-i}) = \sum_{s_i \in S_i} u_i(s_i, s_{-i}) \prod_{j \neq i} x_{s_j}^j
+    u_i(s_i, x^{-i}) = \sum_{s_{-i} \in S_{-i}} u_i(s_i, s_{-i}) \prod_{j \neq i} x_{s_j}^j
   \]
   where $u_i(s_i, s_{-i})$ is the utility from the pure strategy game.
 
@@ -2515,6 +2515,508 @@ strategies), so it is not practical.
   Show that in the game of rock paper scissors, both players playing $(\frac{1}{3}, \frac{1}{3},
   \frac{1}{3})$ is the only Nash equilibrium.
 \end{exer}
+
+%%%%% Lec 18
+\section{Voting Game}
+
+Downs paradox: Voting has costs.
+The probability that one vote is a decisive vote is very small.
+Costs outweigh benefits.
+
+Expectation: people don't vote.
+Reality: people do vote.
+
+Model for voter participation: Suppose there are candidates $A, B$ and the number of supporters are
+$a, b$, respectively.
+WLOG, assume $a \geq b$.
+Each person can choose to ``vote'' or ``abstain''.
+If they vote, then they incur a cost of $c$ where $0 < c < 1$.
+Regardless of voting or abstaining, each person gets a payoff of 2 if their supporting candidate
+wins, 1 for a tie, or 0 for a loss.
+
+\subsection{Pure Nash equilibria}
+
+Suppose $a = b = 1$.
+\begin{center}
+  \renewcommand{\arraystretch}{1.25}
+  \begin{tabular}{c c|c|c|}
+    \multicolumn{2}{c}{} & \multicolumn{2}{c}{P II (B)} \\
+    \multicolumn{2}{c}{} & \multicolumn{1}{c}{A} & \multicolumn{1}{c}{V} \\
+    \cline{3-4}
+    \multirow{2}{*}{P I (A)} & A & $1, 1$ & $0, 2 - c$ \\
+    \cline{3-4}
+    & V & $2 - c, 0$, & $1 - c, 1 - c$ \\
+    \cline{3-4}
+  \end{tabular}
+\end{center}
+This is similar to prisoner's dilemma: if both players vote, they get lower utility than if both
+players abstain.
+(Both voting is an NE.)
+
+Suppose $a = b \geq 2$.
+There are 4 cases:
+\begin{enumcase}
+  \item
+  Everyone votes.
+
+  Tie: everyone has utility $1 - c$, switching gives $0$.
+  NE.
+  \item
+  Not everyone votes, but there is a tie.
+
+  One who abstains can vote, moving utility from $1$ to $2 - c > 1$.
+  Not NE.
+  \item
+  One candidate wins by 1 vote.
+
+  One who abstains for the loser can vote, moving utility from $0$ to $1 - c > 0$.
+  Not NE.
+  \item
+  One candidate wins by at least 2 votes.
+
+  One for votes for the winning candidate can abstain, moving utility from $2 - c$ to $2 > 2 - c$.
+  Not NE.
+\end{enumcase}
+In a close election, we expect more people to vote.
+
+\begin{exer}{}{18.1}
+  Show that when $a > b$, there is no pure Nash equilibrium.
+\end{exer}
+
+\subsection{Mixed Nash equilibria}
+
+One possible scenario for a mixed NE.
+
+Suppose $a > b$.
+Suppose among all $A$ supporters, $b$ of them will vote and $a - b$ of them will abstain.
+Suppose every $B$ supporter will vote with the same probability $p$.
+So the best that $B$ can do is a tie.
+It is easy to check that $p = 0$ or $p = 1$ is not an NE.
+Assume $p \in (0, 1)$.
+
+Consider a $B$ supporter.
+If they abstain, then $B$ cannot win.
+So utility of ``abstain'' as a pure strategy is 0.
+If they vote, then $B$ ties only if all other $B$ supporters vote (utility $1 - c$), otherwise $B$
+loses (utility $-c$).
+The expected utility of ``vote'' as a pure strategy is
+$p^{b - 1} (1 - c) + (1 - p^{b - 1}) (-c) = p^{b - 1} - c$.
+
+When is it possible that this is in an NE?
+$p \in (0, 1)$, so both strategies have positive probabilities.
+To be in the best response, support characterization implies that the two utilities are equal.
+So $0 = p^{b - 1} - c$, or $p = c^{\frac{1}{b - 1}}$.
+
+Given this $p$, are $A$ supporters incentivized to change their mixed strategies?
+Currently, all of them are playing pure strategies.
+In order to switch, the utility of switching to the other pure strategy must be greater.
+
+\begin{enumcase}
+  \item
+  Consider an $A$ supporter who abstained.
+  Expected utility is $p^b \cdot 1 + (1 - p^b) \cdot 2 = 2 - p^b$.
+
+  Expected utility of voting is $2 - c$ ($A$ is guaranteed to win).
+  $2 - c = 2 - p^{b - 1} \leq 2 - p^b$ since $0 < p < 1$.
+  Switching to a pure strategy does not increase utility.
+  So switching to any mixed strategy does not increase utility.
+  There is no reason to switch.
+  \item
+  Consider an $A$ supporter who voted.
+  Expected utility is $p^b \cdot (1 - c) + (1 - p^b) \cdot (2 - c) = 2 - p^b - c$.
+
+  If they abstain, then $A$ loses if all $B$ supporters vote, $A$ ties if $b - 1$ $B$ supporters
+  vote, or $A$ wins otherwise.
+  The expected utility of abstaining is $p^b \cdot 0 + b \cdot p^{b - 1} \cdot (1 - p) \cdot 1 +
+    (1 - p^b - b \cdot p^{b - 1} \cdot (1 - p)) \cdot 2 = 2 - 2p^b - b p^{b - 1} (1 - p)$.
+  Check: $2 - p^b - c \geq 2 - 2p^b - b p^{b - 1} (1 - p)$.
+  There is no reason to switch.
+\end{enumcase}
+
+When $p = c^{\frac{1}{b - 1}}$, this is a mixed NE.
+
+What happens to voter participation as cost increases?
+If $c$ increases, then $p$ increases, so more voters will vote.
+
+%%%%% Lec 19
+\section{Two-player Zero-sum Games}
+
+\begin{defn}{zero-sum game}{zero_sum_game}
+  A strategic game is a \hldef{zero-sum game} if for all strategy profiles $s \in S$,
+  $\sum\limits_{i \in N} u_i(s) = 0$.
+\end{defn}
+
+Examples: matching pennies and rock paper scissors.
+
+For a two-player zero-sum game, let $S_1 = \{ 1, \ldots, m \}$ and $S_2 = \{ 1, \ldots, n \}$.
+Define such a game with a payoff matrix $A \in \mathbb{R}^{m \times n}$ where $u_1(i, j) = A_{ij}$
+and $u_2(i, j) = -A_{ij}$.
+
+\begin{ex}
+  Payoff for player I:
+  \begin{center}
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{c c |c|c|c|c}
+      \multicolumn{2}{c}{} & \multicolumn{3}{c}{P II} & \\
+      \multicolumn{2}{c}{} & \multicolumn{1}{c}{1} & \multicolumn{1}{c}{2}
+        & \multicolumn{1}{c}{3} & \\
+      \cline{3-5}
+      \multirow{2}{*}{P I} & 1 & 3 & 5 & $-2$ & \multirow{2}{*}{= $A$} \\
+      \cline{3-5}
+      & 2 & $-5$ & 7 & 1 & \\
+      \cline{3-5}
+    \end{tabular}
+  \end{center}
+  Payoff for player II is $-A$.
+\end{ex}
+
+Note: for a mixed strategy profile $x = (x^1, x^2)$, we have $u_1(x^1, x^2) = -u_2(x^1, x^2)$.
+
+\subsection{Min-maxing argument for finding a Nash equilibrium}
+
+Given a strategy that we play, the opposing player will maximize their utility, which minimizes our
+utility.
+Knowing how they would play, what can we do to maximize our own utility?
+
+Player I's perspective: Suppose player I plays $x^1$.
+They expect player II to play from their best response.
+
+\begin{ex}
+  The expected utilities for player II's 3 strategies above are $u_2(1, x^1) = -3x_1^1 + 5x_2^1$,
+  $u_2(2, x^1) = -5x_1^1 - 7x_2^1$, and $u_3(3, x^1) = 2x_1^1 - x_2^1$.
+
+  We look for
+  \begin{align*}
+    & \max \{ -3x_1^1 + 5x_2^1, -5x_1^1 - 7x_2^1, 2x_1^1 - x_2^1 \} \\
+    =& \min \{ 3x_1^1 - 5x_2^1, 5x_1^1 + 7x_2^1, -2x_1^1 + x_2^1 \}.
+  \end{align*}
+
+  We wish to maximize:
+  \begin{align*}
+    \max \quad & u_1 \\
+    \text{s.t.} \quad & u_1 \leq 3x_1^1 - 5x_2^1 \\
+    & u_1 \leq 5x_1^1 + 7x_2^1 \\
+    & u_1 \leq -2x_1^1 + x_2^1 \\
+    & x_1^1 + x_2^1 = 1 \\
+    & x_1 \geq \mathbb{0}
+  \end{align*}
+\end{ex}
+
+Player II's expected utility for playing pure strategy $j$ is $-(x^1)^T A_{\bullet j}$ (where
+$A_{\bullet j}$ is the $j$-th column of $A$).
+The utility of player II's best response is equal to the maximum of these values:
+\[
+  \max_{j \in \{1, \ldots, n\}} -(x^1)^T A_{\bullet j}
+    = -\min_{j \in \{1, \ldots, n\}} (x^1)^T A_{\bullet j}.
+\]
+So utility for player I is $\min\limits_{j \in \{1, \ldots, n\}} (x^1)^T A_{\bullet j}$.
+Player I wants to maximize this.
+
+\begin{center}
+\begin{tabular}{c c c}
+  $\begin{aligned}
+    \max \quad & \min_{j \in \{1, \ldots, n\}} (x^1)^T A_{\bullet j} \\
+    \text{s.t.} \quad & \sum_{i = 1}^m x_i^1 = 1 \\
+    & x_1 \geq \mathbb{0} \\
+  \end{aligned}$
+  &
+  $\longrightarrow$
+  &
+  $\begin{aligned}
+    \max \quad & u_1 \\
+    \text{s.t.} \quad & u_1 \leq (x^1)^T A_{\bullet j} \ \forall j \in \{1, \ldots, n\} \\
+    & \sum_{i = 1}^m x_i^1 = 1 \\
+    & x^1 \geq \mathbb{0}
+  \end{aligned}$
+  \\
+\end{tabular}
+\end{center}
+
+Player II's perspective: Suppose player II plays $x^2$.
+Then player I will play from their best response.
+
+\begin{ex}
+  Player I's best response has utility
+  \[
+    \max\{ 3x_1^2 + 5x_2^2 - 2x_3^2, -5x_1^2 + 7x_2^2 + x_3^2 \}.
+  \]
+
+  We wish to minimize:
+  \begin{align*}
+    \min \quad & u_2 \\
+    \text{s.t.} \quad & 3x_1^2 + 5x_2^2 - 2x_3^2 \leq u_2 \\
+    & {-}5x_1^2 + 7x_2^2 + x_3^2 \leq u_2 \\
+    & x_1^2 + x_2^2 + x_3^2 = 1 \\
+    & x_2 \geq \mathbb{0}
+  \end{align*}
+\end{ex}
+
+The utility of player I's best response is
+$\max\limits_{i \in \{1, \ldots, m\}} (x^2)^T A_{i \bullet}$ (where $A_{i \bullet}$ is the $i$-th
+row of $A$).
+Player II's utility is $-\max\limits_{i \in \{1, \ldots, m\}} (x^2)^T A_{i \bullet}$.
+Maximizing this is equivalent to minimizing
+$\max\limits_{i \in \{1, \ldots, m\}} (x^2)^T A_{i \bullet}$:
+
+\begin{center}
+\begin{tabular}{c c c}
+  $\begin{aligned}
+    \max \quad & \min_{i \in \{1, \ldots, m\}} (x^2)^T A_{i \bullet} \\
+    \text{s.t.} \quad & \sum_{j = 1}^n x_j^2 = 1 \\
+    & x_2 \geq \mathbb{0} \\
+  \end{aligned}$
+  &
+  $\longrightarrow$
+  &
+  $\begin{aligned}
+    \max \quad & u_2 \\
+    \text{s.t.} \quad & u_2 \leq (x^2)^T A_{i \bullet} \ \forall i \in \{1, \ldots, m\} \\
+    & \sum_{j = 1}^n x_j^2 = 1 \\
+    & x^2 \geq \mathbb{0}
+  \end{aligned}$
+  \\
+\end{tabular}
+\end{center}
+
+Main result: the LPs for player I and player II are duals of each other.
+(Exercise: verify this in general.)
+
+Both LPs are feasible (take $x^1, x^2$ to be any probability distributions and $u_1, u_2$ as
+max/min values).
+So both have optimal solutions with the same objective value.
+(Note: objective value of player I's LP is the utility of player I, so the objective value of
+player II's LP is the negative of the utility of player II.)
+The optimal solutions are best responses to each other, so they form a Nash equilibrium.
+Solve for this using simplex (a modified version of simplex is provably polynomial time).
+
+\begin{thm}{}{19.1}
+  Any (finite) two-player zero-sum game has a mixed Nash equilibrium, and this can be efficiently
+  computed.
+\end{thm}
+
+\begin{ex}
+  For our two LPs above, an optimal solution is
+  \begin{itemize}
+    \item Player I: $x^1 = (\frac{6}{11}, \frac{5}{11})$ and $u_1 = \frac{-7}{11}$
+    \item Player II: $x^2 = (\frac{3}{11}, 0, \frac{8}{11})$ and $u_2 = \frac{-7}{11}$
+  \end{itemize}
+  where player I's utility is $u_1$ and player II's utility is $-u_2$.
+\end{ex}
+
+Note: computing NEs in general is difficult.
+Even in the 3-player zero-sum game or 2-player general-sum game, no polynomial time algorithm is
+known.
+
+%%%%% Lec 20
+\section{Nash's Theorem (I)}
+
+\begin{thm}{Nash's theorem}{20.1}
+  Every strategic game with finitely many players and pure strategies has a Nash equilibrium.
+\end{thm}
+
+\subsection{Brouwer's fixed point theorem}
+
+\begin{thm*}{Brouwer's fixed point theorem}
+  Let $X$ be a convex and compact set in a finite-dimensional Euclidean space, and let
+  $f \colon X \to X$ be a continuous function.
+  Then there exists $x_0 \in X$ such that $f(x_0) = x_0$ (``fixed point'').
+\end{thm*}
+
+\begin{ex}
+  Let $X = [0, 1]$.
+  Consider any continuous function $f \colon [0, 1] \to [0, 1]$.
+
+  \begin{center}
+    \includegraphics[width=0.3\textwidth]{20-1}
+  \end{center}
+
+  The graph of $f$ will always intersect $f(x) = x$, producing a fixed point.
+  This is a consequence of the intermediate value theorem (applied to $f(x) - x$).
+\end{ex}
+
+Terminology from the theorem:
+\begin{itemize}
+  \item
+  We will think of a Euclidean space as $\mathbb{R}^n$ with the standard dot product, which defines
+  how we measure distance and angle.
+  \item
+  A set is convex if for any two points in the set, the line segment joining them is also in the
+  set.
+  Precise definition: $S$ is convex if for all $u, v \in S$, $\lambda u + (1 - \lambda) v \in S$ for
+  all $\lambda \in [0, 1]$.
+  Note that the convex combination of any set of points is convex:
+  $S = \{ \lambda_1 v_1 + \cdots + \lambda_n v_n : \lambda_1, \ldots, \lambda_n \geq 0,
+    \lambda_1 + \cdots + \lambda_n = 1 \}$ is convex.
+  \item
+  A set is compact if it is closed and bounded.
+  Closed: all ``boundary'' points are in the set, \emph{e.g.} $[0, 1]$ is closed, $(0, 1)$ is not
+  closed.
+  Bounded: there is a constant that bounds the distance between any two points.
+\end{itemize}
+
+Note: this is a deep theorem from analysis.
+We will not prove it here, though there are many fascinating proofs of it (suggestion: look into the
+combinatorial proof using Sperner's Lemma).
+None of the proofs are constructive: we know that a fixed point exists, but the proofs do not tell
+us how to find one.
+
+Illustrations:
+\begin{enumerate}
+  \item
+  Print a world map and place it on your desk.
+  This is a continuous mapping from the surface of the Earth to the part of the surface occupied by
+  the map on your desk.
+  The theorem implies there is a fixed point: some point on the map is directly on top of the point
+  it represents on your desk.
+  \item
+  Take a cup of tea and stir it.
+  Let it settle.
+  Then some part of the liquid is in the same spot before the stir.
+\end{enumerate}
+
+\subsection{Relation to strategic games}
+
+We want to use Brouwer's fixed point theorem when $X$ is the set of all mixed strategy profiles of
+a finite strategic game.
+Need to verify that $\Delta$ is convex and compact.
+
+Start with just one player $i$ and their set of mixed strategies $\Delta^i$.
+If the set of pure strategies is $\{1, \ldots, k\}$, then
+\[
+  \Delta^i = \{ (x_1^i, \ldots, x_k^i) : x_j^i \geq 0, x_1^i + \cdots + x_k^i = 1 \}.
+\]
+
+\begin{minipage}[t]{0.4\textwidth}
+  $k = 2$: $\Delta^i = \{(p, 1 - p) : p \in [0, 1]\}$
+
+  \vspace{\baselineskip}
+  \begin{center}
+    \includegraphics[width=4.5cm]{20-2}
+  \end{center}
+\end{minipage}\hfill\begin{minipage}[t]{0.55\textwidth}
+  $k = 3$: $\Delta^i = \{(p, q, r) : p + q + r = 1, p, q, r \geq 0\}$
+
+  \vspace{\baselineskip}
+  \begin{center}
+    \includegraphics[width=4.5cm]{20-3}
+  \end{center}
+\end{minipage}
+
+We can see (without proof) that $\Delta^i$ is compact: it is closed, and any 2 points have distance
+at most $\sqrt{2}$.
+$\Delta^i$ is convex: it is the convex combination of the standard basis vectors $e_1, \ldots, e_k$.
+(An element of $\Delta^i$ has the form $x_1^i e_1 + \cdots + x_k^i e_k$ where
+$x_1^i + \cdots + x_k^i = 1$, $x_j^i \geq 0$.)
+These $e_1, \ldots, e_k$ are the pure strategies of player $i$.
+
+The set of all strategy profiles is $\Delta = \Delta^1 \times \cdots \times \Delta^n$.
+We can ``pretend'' that this is a set in $\mathbb{R}^{\abs{S_1} + \cdots + \abs{S_n}}$.
+It is still compact (a result from analysis is that the cartesian product of compact sets is
+compact).
+It is also convex (exercise).
+So we can use $\Delta$ as the set in Brouwer's fixed point theorem.
+
+To do: find a continuous function $f \colon \Delta \to \Delta$ that relates fixed points to Nash
+equilibria.
+
+%%%%% Lec 21
+\section{Nash's Theorem (II)}
+
+Recall: the set of all strategy profiles $\Delta$ is convex and compact.
+Need $f \colon \Delta \to \Delta$ to relate fixed points and Nash equilibria.
+
+\subsection{Main idea}
+
+Given a strategy profile $x = (x^1, \ldots, x^n)$, a player $i$ will look at possibly switching to a
+pure strategy to gain utility against $x^{-i}$.
+If pure strategy $s$ improves utility, then player $i$ wants to shift the probability distribution
+so that $s$ receives higher probability.
+The function will take $x$ and map it to another strategy profile where each player improves their
+utility.
+
+\begin{ex}[Example: rock paper scissors]
+  Suppose both play rock as a pure strategy.
+  They can increase utility by moving toward paper.
+  \begin{center}
+    \includegraphics[width=0.45\textwidth]{21-1}
+  \end{center}
+  Suppose player I plays rock and player II plays paper.
+  Player II cannot improve utility.
+  Player I can improve utility by 1 if they move to paper, or improve utility by 2 if they move to
+  scissors.
+  Player I will move more toward scissors than paper.
+  \begin{center}
+    \includegraphics[width=0.45\textwidth]{21-2}
+  \end{center}
+\end{ex}
+
+What is the meaning of a fixed point?
+No player can improve their utility.
+So it must be a Nash equilibrium.
+
+\subsection{Defining the function}
+
+First, define $\Phi$ which records the improvement of a player in switching to a pure strategy.
+Given strategy profile $x \in \Delta$, a player $i$, and a pure strategy $s \in S_i$, define
+\[
+  \Phi_s^i(x) = \max \{ 0, u_i(s, x^{-i}) - u_i(x) \}.
+\]
+If playing $s$ increases utility for player $i$, then $\Phi_s^i(x)$ represents this increase;
+otherwise $\Phi_s^i(x) = 0$.
+
+For player $i$ and strategies $s$ where $\Phi_s^i(x) > 0$, we want to increase the probability
+assigned to $s$.
+We want to replace $x_s^i$ by $x_s^i + \Phi_s^i(x)$, but the sum of the probabilities would be
+greater than 1.
+We can normalize this by dividing by $\sum\limits_{s' \in S_i} (x_{s'}^i + \Phi_{s'}^i(x)) =
+  1 + \sum\limits_{s' \in S_i} \Phi_{s'}^i(x)$.
+
+We define $f \colon \Delta \to \Delta$ by $f(x) = \overline{x}$ where for each player $i$ and
+strategy $s \in S_i$,
+\[
+  \overline{x}_s^i = \frac{x_s^i + \Phi_s^i(x)}{1 + \sum\limits_{s' \in S_i} \Phi_{s'}^i(x)}.
+\]
+Verify that $f(x) \in \Delta$.
+
+\begin{ex}
+  In rock paper scissors where player I plays rock and player II plays paper, the strategy profile
+  is $x = ((1, 0, 0), (0, 1, 0))$.
+  For player II, $\Phi_s^2(x) = 0$ for each $s \in \{ \text{R}, \text{P}, \text{S} \}$.
+  For player I, $\Phi_\text{R}^1(x) = 0$, $\Phi_\text{P}^1(x) = 1$, and $\Phi_\text{S}^1(x) = 2$.
+  So the new strategy for player I is
+  \[
+    \overline{x}_\text{R}^1 = \frac{1 + 0}{1 + 3} = \frac{1}{4}, \quad
+    \overline{x}_\text{P}^1 = \frac{0 + 1}{1 + 3} = \frac{1}{4}, \quad
+    \overline{x}_\text{S}^1 = \frac{0 + 2}{1 + 3} = \frac{1}{2}.
+  \]
+  Then $f(x) = ((\frac{1}{4}, \frac{1}{4}, \frac{1}{2}), (0, 1, 0))$.
+\end{ex}
+
+\subsection{Completing the proof of Nash's theorem}
+
+Given $x \in \Delta$, consider $\Phi$ and $f \colon \Delta \to \Delta$ defined above.
+We see that $f$ is continuous since $\Phi$ is continuous.
+By Brouwer's fixed point theorem, there exists $\hat{x} \in \Delta$ such that
+$f(\hat{x}) = \hat{x}$.
+We prove that $\hat{x}$ is a NE by showing $\hat{x}^i \in B_i(\hat{x}^{-i})$.
+
+For player $i$, let $s \in S_i$ be a pure strategy such that $\hat{x}_s^i > 0$ and
+$u_i(s, \hat{x}^{-i}) \leq u_i(\hat{x})$.
+(Exercise: show such $s$ exists.)
+Then $\Phi_s^i(\hat{x}) = 0$.
+Since $\hat{x}$ is a fixed point, $\hat{x}_s^i = (f(\hat{x}))_s^i =
+  \hat{x}_s^i / (1 + \sum\limits_{s' \in S_i} \Phi_{s'}^i (\hat{x}))$.
+Since $\hat{x}_s^i > 0$, the denominator must be 1.
+So $\sum\limits_{s' \in S_i} \Phi_{s'}^i(\hat{x}) = 0$.
+But $\Phi$ is non-negative, so $\Phi_{s'}^i(\hat{x}) = 0$ for all $s' \in S_i$.
+This means that $u_i(s', \hat{x}^{-i}) \leq u_i(\hat{x})$ for all $s' \in S_i$.
+So playing $\hat{x}^i$ gives the highest utility against $\hat{x}^{-i}$, so
+$\hat{x}^i \in B_i(\hat{x}^{-i})$.
+Since this holds for all players, $\hat{x}$ is a Nash equilibrium.
+\hfill $\qed$
+
+Note: this proves that a NE always exists, but the proof does not show us how to find such a NE, as
+it depends on Brouwer's fixed point theorem.
 
 %---------------
 \end{document}
