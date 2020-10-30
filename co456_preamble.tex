@@ -328,8 +328,8 @@
 }
 
 % Enum with circled numbers
-\newenvironment{enumcase}{
-  \begin{enumerate}[label=\protect\circled{\arabic*}]
+\newenvironment{enumcase}[1][]{
+  \begin{enumerate}[label=\protect\circled{\arabic*}, #1]
 }{
   \end{enumerate}
 }

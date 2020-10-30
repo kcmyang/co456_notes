@@ -3018,6 +3018,391 @@ Since this holds for all players, $\hat{x}$ is a Nash equilibrium.
 Note: this proves that a NE always exists, but the proof does not show us how to find such a NE, as
 it depends on Brouwer's fixed point theorem.
 
+%%%%% Topic: Cooperative Games
+\coursetopic{Cooperative Games}
+
+%%%%% Lec 22
+\section{Cooperative Games}
+
+There are games where groups of players can work together to obtain higher utility.
+
+\begin{ex}
+  Alice (A), Bob (B), and Carol (C) want to buy ice cream.
+  There are three sizes of ice cream: 1L, 1.5L, and 2L with costs \$7, \$9, \$11 respectively.
+  A has \$3, B has \$4, C has \$5.
+  On their own, they cannot buy any.
+  But if they pool money together, they can get some ice cream.
+  (For example, B + C can buy 1.5L.)
+\end{ex}
+
+\begin{defn}{cooperative game}{cooperative_game}
+  A \hldef{cooperative game} is given by a set of players $N$ and a characteristic function
+  $v \colon 2^N \to \mathbb{R}$ that assigns a value $v(S)$ to each coalition $S \subseteq N$ of
+  players.
+  We use $(N, v)$ to represent this game.
+  The set $N$ is the \hldef{grand coalition}.
+\end{defn}
+
+\begin{ex}
+  In the ice cream game, $N = \{ \text{A}, \text{B}, \text{C} \}$ and $v$ is defined by:
+  \[
+    \begin{array}{c|c|c|c|c|c}
+      S & \varnothing, \{\text{A}\}, \{\text{B}\}, \{\text{C}\} & \{\text{A}, \text{B}\}
+        & \{\text{A}, \text{C}\} & \{\text{B}, \text{C}\} & \{\text{A}, \text{B}, \text{C}\} \\
+      \hline
+      v(S) & 0 & 1 & 1 & 1.5 & 2 \\
+    \end{array}
+  \]
+\end{ex}
+
+General assumptions: $v(\varnothing) = 0$, $v(S) \geq 0$ for all $S \subseteq N$.
+
+\begin{ex}
+  A country has 101-member parliament.
+  There are 4 parties A, B, C, D with 40, 22, 30, 9 members, respectively.
+  They need to decide how to spend a \$1B winfall but they need to form a majority to spend it.
+  \[
+    N = \{A, B, C, D\}, \qquad v(S) = \begin{cases}
+      10^9 & \text{if parties in } S \text{ have at least 51 members} \\
+      0 & \text{otherwise}
+    \end{cases}
+  \]
+\end{ex}
+
+\begin{ex}
+  In a matching game, we are given a graph $G = (V, E)$ and edge weights
+  $w \colon E \to \mathbb{R}$.
+  The players are the vertices, $V = N$.
+  The weight of an edge represents the benefits if the two vertex players work together.
+  For any subset $S \subseteq N$, the value is the maximum weight of a matching using vertices in
+  $S$.
+\end{ex}
+
+\subsection{Outcomes of cooperative games}
+
+Outcomes of strategic games: strategy profiles (pure or mixed).
+Which strategy is played by each player?
+
+Outcomes of cooperative games:
+\begin{enumerate}
+  \item
+  Divide the players into groups, called coalitions (``coalition structure'').
+  Each coalition will generate their assigned value.
+  \item
+  Distribute the value that each coalition generates among its members (``payoff vector'').
+\end{enumerate}
+
+\begin{defn}{coalition structure, payoff vector, efficient}{cooperative_defns}
+  Given a cooperative game $(N, v)$, a \hldef{coalition structure} is a partition $\pi$ of $N$,
+  \emph{i.e.} $\pi = (c^1, \ldots, c^k)$ where each $c^i \subseteq N$, $c^i \cap c^j = \varnothing$
+  whenever $i \neq j$, and $c^1 \cup \cdots \cup c^k = N$.
+
+  A \hldef{payoff vector} is a vector $x \in \mathbb{R}^N$ such that $x \geq \mathbb{0}$ and
+  $\sum\limits_{i \in c^j} x_i \leq v(c^j)$ for all $j = 1, \ldots, k$.
+
+  Notation: for any $T \subseteq N$, $x(T) = \sum\limits_{i \in T} x_i$.
+  So the inequality here is $x(c_j) \leq v(c^j)$.
+
+  An outcome consists of $(\pi, x)$.
+  Such an outcome is \hldef{efficient} if $x(c^j) = v(c^j)$ for all $j$.
+\end{defn}
+
+\begin{ex}
+  An outcome of the ice cream game is $(\pi, x)$ where
+  $\pi = (\{\text{A}, \text{B}\}, \{\text{C}\})$ and $x_\text{A} = 0.5$, $x_\text{B} = 0.5$, and
+  $x_\text{C} = 0$.
+  This outcome is efficient: $v(\{\text{A}, \text{B}\}) = 1 = x_\text{A} + x_\text{B}$ and
+  $v(\{\text{C}\}) = x_\text{C}$.
+\end{ex}
+
+\pagebreak
+\subsection{Some classes of games}
+
+\begin{enumerate}
+  \item
+  \hldef{Monotone games}: $S \subseteq T \implies v(S) \leq v(T)$ (``more people produce more
+  value'').
+  \item
+  \hldef{Superadditive games}: for disjoint $S, T$, $v(S) + v(T) \leq v(S \cup T)$ (``forming
+  coalitions is always better'').
+
+  Superadditivity implies monotonicity, but the converse is not true.
+  We usually only consider the grand coalition: $\pi = (N)$.
+  \item
+  \hldef{Convex games}: for any $S, T$, $v(S) + v(T) \leq v(S \cup T) + v(s \cap T)$
+  (supermodularity inequality).
+
+  Convexity implies superadditivity, but the converse is not true.
+\end{enumerate}
+
+\begin{prop}{}{21.1}
+  A game $(N, v)$ is convex if and only if for every $S, T$ where $S \subseteq T \subseteq N$ and
+  for every player $i \in N \setminus T$, $v(T \cup \{i\}) - v(T) \geq v(S \cup \{i\}) - v(S)$.
+\end{prop}
+
+(Proof as exercise.)
+
+This proposition gives the intuition ``a player is more useful in larger coalitions''.
+
+%%%%% Lec 23
+\section{Shapley Values (I)}
+
+Two desirable properties of an outcome in cooperative games:
+\begin{enumerate}
+  \item
+  Fairness.
+  The payoff vector should reflec the contribution of the playres to their coalitions.
+  \item
+  Stability.
+  We want to incentivize the players to stay in their assigned coalition in the coalition structure.
+\end{enumerate}
+
+\subsection{Shapley values}
+
+Shapley values deal with the fairness of the payoff vector.
+Assume players form the grand coalition.
+(If not, look at individual coalitions separately.)
+
+Question: how can we quantify a player's contribution?
+
+Idea 1: compare the value of the coalition before and after a player joins it.
+
+\begin{ex}
+  In the ice cream game, the contribution of A is
+  $v(\{\text{A}, \text{B}, \text{C}\}) - v(\{\text{B}, \text{C}\}) = 0.5$.
+  The contribution of B is 1 and the contribution of C is 1.
+
+  Can a payoff vector take these values?
+  No.
+\end{ex}
+
+Problem: the sum of the payoffs may exceed the value of the coalition ($x(N) > v(N)$).
+
+Idea 2: fix a sequence of the players and see their contribution sequentially.
+
+\begin{ex}
+  Consider the ice cream game with sequence A, B, C.
+  $v(\{\text{A}\}) = 0$, so A contributes 0.
+  $v(\{\text{A}, \text{B}\}) = 1$, so B contributes 1.
+  $v(\{\text{A}, \text{B}, \text{C}\}) = 2$, so C contributes 1.
+
+  This is efficient: $x(N) = v(N)$.
+\end{ex}
+
+Problem: different ordering produce different results.
+
+Shapley's idea: look at all possible orderings of players and average a player's contributions.
+
+Notation:
+\begin{itemize}
+  \item
+  A permutation of $N$ has the form $\sigma = (\sigma_1, \ldots, \sigma_n)$ where each $\sigma_1$ is
+  a distinct element of $N$.
+  \item
+  The element $\sigma_i$ is at the $i$-th position of $\sigma$.
+  \item
+  The set of all permutations of $N$ is denoted $S_N$.
+\end{itemize}
+
+\begin{defn}{marginal contribution, Shapley value}{shapley_defns}
+  Given a permutation $\sigma \in S_N$, the \hldef{marginal contribution} of player $\sigma_i$ is
+  $\Delta_\sigma(\sigma_i) = v(\{\sigma_1, \ldots, \sigma_i\}) -
+    v(\{\sigma_1, \ldots, \sigma_{i - 1}\})$.
+
+    The \hldef{Shapley value} of player $i$ is
+    \[
+      \varphi_i = \frac{1}{n!} \sum_{\sigma \in S_N} \Delta_\sigma(i).
+    \]
+\end{defn}
+
+\begin{ex}
+  In the ice cream game, $N = \{\text{A, B, C}\}$ and six permuations:
+  \[
+    \renewcommand{\arraystretch}{1.2}
+    \begin{array}{cc}
+      \sigma^1 = (\text{A}, \text{B}, \text{C})
+      & \sigma^4 = (\text{B}, \text{C}, \text{A}) \\
+      \sigma^2 = (\text{A}, \text{C}, \text{B})
+      & \sigma^5 = (\text{C}, \text{A}, \text{B}) \\
+      \sigma^3 = (\text{B}, \text{A}, \text{C})
+      & \sigma^6 = (\text{C}, \text{B}, \text{A}) \\
+    \end{array}
+  \]
+  We calculate the marginal contribution of A in each of the permutations:
+  \[
+    \renewcommand{\arraystretch}{1.2}
+    \begin{array}{ll}
+      \Delta_{\sigma^1}(\text{A}) = v(\{\text{A}\}) - v(\varnothing) = 0
+      & \Delta_{\sigma^4}(\text{A}) = v(\{\text{B}, \text{C}, \text{A}\})
+        - v(\{\text{B}, \text{C}\}) = 0.5 \\
+      \Delta_{\sigma^2}(\text{A}) = v(\{\text{A}\}) - v(\varnothing) = 0
+      & \Delta_{\sigma^5}(\text{A}) = v(\{\text{C}, \text{A}\}) - v(\{\text{C}\}) = 1 \\
+      \Delta_{\sigma^3}(\text{A}) = v(\{\text{B}, \text{A}\}) - v(\{\text{B}\}) = 1
+      & \Delta_{\sigma^6}(\text{A}) = v(\{\text{C}, \text{B}, \text{A}\})
+        - v(\{\text{C}, \text{B}\}) = 0.5 \\
+    \end{array}
+  \]
+  So the Shapley value for A is
+  $\varphi_\text{A} = \frac{1}{6}(0 + 0 + 1 + 0.5 + 1 + 0.5) = \frac{1}{2}$.
+
+  The other Shapley values are $\varphi_\text{B} = \varphi_\text{C} = \frac{3}{4}$.
+\end{ex}
+
+%%%%% Lec 24
+\section{Shapley Values (II)}
+
+\subsection{Four good properties of Shapley values}
+
+\begin{enumcase}
+  \item Efficiency: it distributes $v(N)$ to all players.
+\end{enumcase}
+
+\begin{prop}{}{24.1}
+  \[
+    \sum_{i \in N} \varphi_i = v(N).
+  \]
+\end{prop}
+
+\begin{thmproof}
+  For any $\sigma \in S_N$, the sum of all marginal contributions is
+  \begin{align*}
+    \sum_{i \in N} \Delta_\sigma(i)
+    &= \sum_{i = 1}^n \Delta_\sigma(\sigma_i) \qquad \text{(since a permutation is a bijection)} \\
+    &= \left[ v(\{\sigma_1\}) - v(\varnothing) \right]
+     + \left[ v(\{\sigma_1, \sigma_2\}) - v(\{\sigma_1\}) \right]
+     + \cdots + \\
+    &\phantom{={}} \quad\left[ v(\{\sigma_1, \ldots, \sigma_n\}) -
+      v(\{\sigma_1, \ldots, \sigma_{n - 1}\}) \right] \\
+    &= v(\{\sigma_1, \ldots, \sigma_n\}) - v(\varnothing) \\
+    &= v(N).
+  \end{align*}
+  So the sum of Shapley values is
+  \[
+    \sum_{i \in N} \varphi_i
+      = \sum_{i \in N} \frac{1}{n!} \sum_{\sigma \in S_N} \Delta_\sigma(i)
+      = \frac{1}{n!} \sum_{\sigma \in S_N} \sum_{i \in N} \Delta_\sigma(i)
+      = \frac{1}{n!} \sum_{\sigma \in S_N} v(N)
+      = \frac{1}{n!} (n!) v(N)
+      = v(N).
+  \]
+\end{thmproof}
+
+\begin{enumcase}[start=2]
+  \item
+  Symmetric: two players $i, j$ are \hldef{symmetric} if $v(c \cup \{i\}) = v(c \cup \{j\})$ for all
+  $c \subseteq N \setminus \{i, j\}$.
+\end{enumcase}
+
+\begin{ex}
+  In the ice cream game, B and C are symmetric:
+  $v(\varnothing \cup \{\text{B}\}) = v(\varnothing \cup \{\text{C}\}) = 0$ and
+  $v(\{\text{A}\} \cup \{\text{B}\}) = v(\{\text{A}\} \cup \{\text{C}\}) = 1$.
+\end{ex}
+
+\begin{prop}{}{24.2}
+  If $i, j$ are symmetric players, then $\varphi_i = \varphi_j$.
+\end{prop}
+
+Proof idea: consider $S_N$ and swap $i, j$ in each permutation to yield $S_N$ again.
+Calculate the marginal contribution of $i$ before the swap and of $j$ after the swap.
+The values should be equal.
+
+\begin{thmproof}[Proof (\cref{prop:24.2}).]
+  Define $f \colon S_N \to S_N$ where $f(\sigma)$ is obtained from $\sigma$ by swapping $i$ and $j$.
+  This is a bijection ($f^{-1} = f$).
+  We claim $\Delta_\sigma(i) = \Delta_{f(\sigma)}(j)$.
+  Two cases:
+  \begin{itemize}
+    \item
+    Suppose $i$ precedes $j$ in $\sigma$.
+    Let $C$ be all elements preceding $i$.
+    In $f(\sigma)$, $C$ is also the elements that precede $j$.
+    So $\Delta_\sigma(i) = v(C \cup \{i\}) - v(C)$ and
+    $\Delta_{f(\sigma)}(j) = v(C \cup \{j\}) - v(C)$.
+    Since $C \subseteq N \setminus \{i, j\}$ and $i, j$ are symmetric,
+    $v(C \cup \{i\}) = v(C \cup \{j\})$.
+    So $\Delta_\sigma(i) = \Delta_{f(\sigma)}(j)$.
+    \item
+    Suppose $j$ precedes $i$ in $\sigma$.
+    Let $C$ be all elements preceding $i$ except $j$.
+    In $f(\sigma)$, $C$ is also the elements preceding $j$ except $i$.
+    So $\Delta_\sigma(i) = v(C \cup \{j\} \cup \{i\}) - v(C \cup \{j\})$ and
+    $\Delta_{f(\sigma)}(j) = v(C \cup \{i\} \cup \{j\}) - v(C \cup \{i\})$.
+    Since $C \subseteq N \setminus \{i, j\}$ and $i, j$ are symmetric,
+    $v(C \cup \{j\}) = v(C \cup \{i\})$.
+    So $\Delta_\sigma(i) = \Delta_{f(\sigma)}(j)$.
+  \end{itemize}
+  Therefore,
+  \[
+    \varphi_i
+      = \frac{1}{n!} \sum_{\sigma \in S_N} \Delta_\sigma(i)
+      = \frac{1}{n!} \sum_{\sigma \in S_N} \Delta_{f(\sigma)}(j)
+      = \frac{1}{n!} \sum_{\sigma \in S_N} \Delta_\sigma(j)
+      = \varphi_j.
+  \]
+\end{thmproof}
+
+\begin{ex}[Example: unanimny game]
+  Suppose $\abs{N} = n$, and $v(S) = 1$ if $S = N$ and $v(S) = 0$ otherwise.
+  Any pair of players is symmetric, so $\varphi_i = \varphi_j$ for any $i, j$.
+  Since $\varphi$ is efficient, the sum is $v(N) = 1$.
+  So $\varphi_i = \frac{1}{n}$ for each $i \in N$.
+\end{ex}
+
+\begin{enumcase}[start=3]
+  \item
+  Dummy player: $i$ is a \hldef{dummy player} if $v(S \cup \{i\}) = v(S)$ for all
+  $S \subseteq N \setminus \{i\}$.
+  The player does not contribute to any coalition.
+\end{enumcase}
+
+\begin{ex}
+  In the 101-seat parliament with parties A, B, C, D with 40, 22, 30, 9 seats, party D is a dummy
+  player.
+  No combination of A, B, C exists where it is not a majority, but adding 9 seats gives a majority.
+\end{ex}
+
+\begin{prop}{}{24.3}
+  If $i$ is a dummy player, then $\varphi_i = 0$.
+\end{prop}
+
+\begin{thmproof}
+  For any $\sigma \in S_N$, say $i$ is at the $j$-th position $(\sigma_j = i$).
+  The marginal contribution of $i$ is $\Delta_\sigma(i) =
+    v(\{\sigma_1, \ldots, \sigma_{j - 1}, i\}) - v(\{\sigma_1, \ldots, \sigma_{j - 1}\}) = 0$ by
+  definition of a dummy player.
+  So
+  \[
+    \varphi_i = \frac{1}{n!} \sum_{\sigma \in S_N} \Delta_\sigma(i) = 0.
+  \]
+\end{thmproof}
+
+Note: the converse is not true in general.
+If a game is monotone, then the converse is true.
+
+\begin{enumcase}[start=4]
+  \item
+  Additivity: suppose there are multiple games with the same set of players.
+  We add the values together to get a new game.
+  Then the Shapley values are also added together.
+\end{enumcase}
+
+\begin{prop}{}{24.4}
+  Let $(N, v^1)$ and $(N, v^2)$ be two cooperative games.
+  Define $v^3(S) = v^1(S) + v^2(S)$ for all $S \subseteq N$.
+  Let $\varphi_i^j$ be the Shapley values of player $i$ in $(N, v^j)$ for each $j = 1, 2, 3$.
+  Then $\varphi_i^3 = \varphi_i^1 + \varphi_i^2$ for all $i$.
+\end{prop}
+
+(Proof as exercise.)
+
+The Shapley values satisfy 4 good properties: efficiency, symmetric, dummy player, and additivity.
+
+The deep result about Shapley values: the Shapley value function is the only one that satisfies all
+4 properties.
+(If $f$ is a function that maps $(N, v)$ to a real vector $\mathbb{R}^N$ and all 4 properties hold,
+then $f$ gives the Shapley values.)
+
 %---------------
 \end{document}
 %---------------
