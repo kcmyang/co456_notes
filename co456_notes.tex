@@ -3094,17 +3094,17 @@ Outcomes of cooperative games:
 
 \begin{defn}{coalition structure, payoff vector, efficient}{cooperative_defns}
   Given a cooperative game $(N, v)$, a \hldef{coalition structure} is a partition $\pi$ of $N$,
-  \emph{i.e.} $\pi = (c^1, \ldots, c^k)$ where each $c^i \subseteq N$, $c^i \cap c^j = \varnothing$
-  whenever $i \neq j$, and $c^1 \cup \cdots \cup c^k = N$.
+  \emph{i.e.} $\pi = (C^1, \ldots, C^k)$ where each $C^i \subseteq N$, $C^i \cap C^j = \varnothing$
+  whenever $i \neq j$, and $C^1 \cup \cdots \cup C^k = N$.
 
   A \hldef{payoff vector} is a vector $x \in \mathbb{R}^N$ such that $x \geq \mathbb{0}$ and
-  $\sum\limits_{i \in c^j} x_i \leq v(c^j)$ for all $j = 1, \ldots, k$.
+  $\sum\limits_{i \in C^j} x_i \leq v(C^j)$ for all $j = 1, \ldots, k$.
 
   Notation: for any $T \subseteq N$, $x(T) = \sum\limits_{i \in T} x_i$.
-  So the inequality here is $x(c_j) \leq v(c^j)$.
+  So the inequality here is $x(C_j) \leq v(C^j)$.
 
   An outcome consists of $(\pi, x)$.
-  Such an outcome is \hldef{efficient} if $x(c^j) = v(c^j)$ for all $j$.
+  Such an outcome is \hldef{efficient} if $x(C^j) = v(C^j)$ for all $j$.
 \end{defn}
 
 \begin{ex}
@@ -3129,7 +3129,7 @@ Outcomes of cooperative games:
   Superadditivity implies monotonicity, but the converse is not true.
   We usually only consider the grand coalition: $\pi = (N)$.
   \item
-  \hldef{Convex games}: for any $S, T$, $v(S) + v(T) \leq v(S \cup T) + v(s \cap T)$
+  \hldef{Convex games}: for any $S, T$, $v(S) + v(T) \leq v(S \cup T) + v(S \cap T)$
   (supermodularity inequality).
 
   Convexity implies superadditivity, but the converse is not true.
@@ -3289,8 +3289,8 @@ Notation:
 
 \begin{enumcase}[start=2]
   \item
-  Symmetric: two players $i, j$ are \hldef{symmetric} if $v(c \cup \{i\}) = v(c \cup \{j\})$ for all
-  $c \subseteq N \setminus \{i, j\}$.
+  Symmetric: two players $i, j$ are \hldef{symmetric} if $v(C \cup \{i\}) = v(C \cup \{j\})$ for all
+  $C \subseteq N \setminus \{i, j\}$.
 \end{enumcase}
 
 \begin{ex}
@@ -3342,7 +3342,7 @@ The values should be equal.
   \]
 \end{thmproof}
 
-\begin{ex}[Example: unanimny game]
+\begin{ex}[Example: unanimity game]
   Suppose $\abs{N} = n$, and $v(S) = 1$ if $S = N$ and $v(S) = 0$ otherwise.
   Any pair of players is symmetric, so $\varphi_i = \varphi_j$ for any $i, j$.
   Since $\varphi$ is efficient, the sum is $v(N) = 1$.
@@ -3402,6 +3402,452 @@ The deep result about Shapley values: the Shapley value function is the only one
 4 properties.
 (If $f$ is a function that maps $(N, v)$ to a real vector $\mathbb{R}^N$ and all 4 properties hold,
 then $f$ gives the Shapley values.)
+
+%%%%% Lec 25
+\section{The Core}
+
+Stability: Given an outcome, what would be a reason why players would want to deviate from it?
+A group of players could generate more value than what they are receiving, $x(C) < v(C)$.
+
+\begin{defn}{core}{core}
+  The \hldef{core} of a cooperative game $(N, v)$ consists of all outcomes $(\pi, x)$ such that
+  $x(C) \geq v(C)$ for all $C \subseteq N$.
+\end{defn}
+
+\begin{ex}
+  In the ice cream game, consider $(\pi, x)$ with $\pi = (\{A, B\}, \{C\})$ and $x_A = 0.5$,
+  $x_B = 0.5$, $x_C = 0$.
+
+  If $C$ joins with $\{A, B\}$, then they produce value 2, while currently their combined payoff is
+  1.
+  It is better for them to form the grand coalition $\{A, B, C\}$, so this outcome is not in the
+  core.
+  The same reasoning gives $\pi = (N)$ if $(\pi, x)$ is in the core.
+
+  If $x_A = 2$, $x_B = x_C = 0$, then $\{B, C\}$ can get more value.
+
+  If $x_A = 0$, $x_B = x_C = 1$, then $(\pi, x)$ is in the core: $x_A + x_B + x_C \geq 2$,
+  $x_A + x_B \geq 1$, $x_A + x_C \geq 1$, $x_B + x_C \geq 1.5$, $x_A, x_B, x_C \geq 0$.
+\end{ex}
+
+\subsection{Properties of the outcomes in the core}
+
+\begin{enumcase}[start=1]
+  \item They are efficient within the coalition structure.
+\end{enumcase}
+
+\begin{prop}{}{25.1}
+  If $(\pi, x)$ is in the core, then $x(C) = v(C)$ for each $C \in \pi$.
+\end{prop}
+
+\begin{thmproof}
+  Let $C \in \pi$.
+  By the definition of the core, $x(C) \geq v(C)$.
+  Since $(\pi, x)$ is a valid outcome, $x(C) \leq v(C)$.
+\end{thmproof}
+
+\begin{enumcase}[start=2]
+  \item
+  The coalition structure generates the maximum amount of total value among all outcomes (``social
+  welfare'').
+
+  Notation: $v(\pi) = \sum\limits_{C \in \pi} v(C)$.
+\end{enumcase}
+
+\begin{prop}{}{25.2}
+  If $(\pi, x)$ is in the core, then $v(\pi) \geq v(\pi')$ for all partitions $\pi'$ of $N$.
+\end{prop}
+
+\begin{thmproof}
+  \[
+    v(\pi) = \sum_{C \in \pi} v(C) = \sum_{C \in \pi} x(C) = \sum_{i \in N} x_i
+      = \sum_{C' \in \pi'} x(C') \geq \sum_{C' \in \pi'} v(C') = v(\pi').
+  \]
+\end{thmproof}
+
+Note: this proposition only says that coalition structures that maximize total value are eligible
+to be in the core.
+It does not mean that there exists an outcome in the core with this structure.
+
+\subsection{Games with empty cores}
+
+\begin{ex}
+  Consider this 3-player majority game:
+  \[
+    N = \{1, 2, 3\}, \quad v(S) = \begin{cases}
+      1 \quad & \text{if } \abs{S} \geq 2 \\
+      0 & \text{otherwise} \\
+    \end{cases}.
+  \]
+  We claim that no outcome is in the core.
+
+  Suppose $(\pi, x)$ is in the core.
+  Then $x_1 + x_2 + x_3 \geq 1$ and $x_1, x_2, x_3 \geq 0$.
+  So $x_i \geq \frac{1}{3}$ for some $i$.
+
+  The value of any coalition is at most 1, so $x_1 + x_2 + x_3 \leq 1$.
+  This means $x(N \setminus \{i\}) \leq \frac{2}{3}$.
+  However, $v(N \setminus \{i\}) = 1 > x(N \setminus \{i\})$, contradicting \cref{prop:25.1}.
+
+  Therefore the core is empty.
+\end{ex}
+
+Main question: which games have non-empty cores?
+
+%%%%% Lec 26
+\section{Cores of Superadditive Games}
+
+Goal: determine when a superadditive game has a non-empty core.
+(Recall a game is superadditive if $v(S) + v(T) \leq v(S \cup T)$ for any disjoint
+$S, T \subseteq N$.)
+
+Narrowing the search: we only need to consider outcomes that form the grand coalition.
+
+\begin{prop}{}{26.1}
+  Let $(N, v)$ be a superadditive game.
+  If $(\pi, x)$ is in the core, then $((N), x)$ is in the core.
+\end{prop}
+
+\begin{thmproof}
+  We need to show the core conditions hold, and $((N), x)$ is a valid outcome.
+
+  Since $(\pi, x)$, $x(C) \geq v(C)$ for all $C \subseteq N$.
+  This still holds for $((N), x)$.
+
+  To show that $((N), x)$ is a valid outcome, we need to verify $x(N) \leq v(N)$.
+  Since $(\pi, x)$ is a valid outcome and the game is superadditive, we get
+  \[
+    x(N) = \sum_{C \in \pi} x(C) \leq \sum_{C \in \pi} \leq v(C) \leq v(N).
+  \]
+\end{thmproof}
+
+\begin{ex}[Example: unanimity game]
+  Recall $v(N) = 1$ and $v(S) = 0$ for $S \subsetneq N$.
+  This game is clearly superadditive.
+
+  To determine if the core is non-empty, we only need to consider $((N), x)$.
+  By \cref{prop:25.1}, $x$ satisfies $\sum\limits_{i \in N} x_i = 1$ and
+  $\sum\limits_{i \in S} x_i \geq 0$ for all $S \subseteq N$.
+
+  Some examples: $x_i = \frac{1}{n}$ for all $i$; $x_1 = 1$ and $x_i = 0$ for $i \neq 1$.
+\end{ex}
+
+\subsection{Characterizing superadditive games with non-empty cores}
+
+Given an outcome $((N), x)$, what must $x$ satisfy to be in the core?
+We claim that $x$ must be in the set
+\[
+  \mathcal{C} = \{ x \in \mathbb{R}^N : x(N) = v(N), \ x(C) \geq v(C) \ \forall C \subseteq N \}.
+\]
+
+\begin{ex}
+  In the ice cream game, $\mathcal{C} = \{ \mathbb{R}^N : x_A + x_B + x_C \geq 2, \
+  x_A + x_B \geq 1, \ x_A + x_C \geq 1, \ x_B + x_C \geq 1.5, \ x_A, x_B, x_C \geq 0 \}$.
+\end{ex}
+
+Now $\mathcal{C}$ is the intersection of halfspaces, so it is a polyhedron.
+Mini-result: $(N, v)$ has non-empty core if and only if $\mathcal{C}$ is non-empty.
+
+We can the solve the problem of ``is $\mathcal{C}$ non-empty'' using a linear program.
+Let (P) be the following LP:
+\begin{align*}
+  \min \quad & x(N) \\
+  \text{s.t.} \quad & x(C) \geq v(C) \ \forall C \subseteq N
+\end{align*}
+
+\begin{ex}
+  In the ice cream game, (P) is
+  \begin{align*}
+    \min \quad & x_A + x_B + x_C \\
+    \text{s.t.} \quad
+    & x_A \phantom{{}+ x_B + x_C} \geq 0 \\
+    & \phantom{x_A +{}} x_B \phantom{{}+ x_C} \geq 0 \\
+    & \phantom{x_A + x_B +{}} x_C \geq 0 \\
+    & x_A + x_B \phantom{{}+ x_C} \geq 1 \\
+    & x_A \phantom{{}+ x_B} {}+ x_C \geq 1 \\
+    & \phantom{x_A +{}} x_B + x_C \geq 1.5 \\
+    & x_A + x_B + x_C \geq 2
+  \end{align*}
+\end{ex}
+
+Rationale: (P) is feasible (take large $x$), and $x(N) \geq v(N)$ is a contraint, so (P) is bounded.
+Then (P) has an optimal solution.
+If the optimal value is $v(N)$, then we have an optimal solution $x$ with $x(N) = v(N)$ and
+$x(C) \geq v(C)$ for all $C \subseteq N$, so $x \in \mathcal{C}$.
+
+Mini-result: $(N, v)$ has a non-empty core if and only if (P) has optimal value $v(N)$.
+
+What about the dual?
+(D) is:
+\begin{align*}
+  \max \quad & \sum_{C \subseteq N} y_C v(C) \\
+  \text{s.t.} \quad
+  & \sum_{C \subseteq N, \ i \in C} y_C = 1 \ \forall i \in N \\
+  & y \geq \mathbb{0}
+\end{align*}
+
+\begin{ex}
+  In the ice cream game, the dual is:
+  \begin{align*}
+    \max \quad & \phantom{y_A + y_B + y_C +{}} y_{AB} + y_{AC} + 1.5y_{BC} + 2y_{ABC} \\
+    \text{s.t.} \quad
+    & y_A \phantom{{}+ y_B + y_C} {}+ y_{AB} + y_{AC} + \phantom{1.5}y_{BC} + \phantom{2}y_{ABC}
+      = 1 \\
+    & \phantom{y_A + {}} y_B \phantom{{}+ y_C} {}+ y_{AB} \phantom{{}+ y_{AC}} + \phantom{1.5}y_{BC}
+      + \phantom{2}y_{ABC} = 1 \\
+    & \phantom{y_A + y_B +{}} y_C \phantom{{}+ y_{AB}} + y_{AC} + \phantom{1.5}y_{BC}
+      + \phantom{2}y_{ABC} = 1 \\
+    & y \geq \mathbb{0}
+  \end{align*}
+\end{ex}
+
+By strong duality, (P) has optimal value $v(N)$ $\iff$ (D) has optimal value $v(N)$ $\iff$
+$\sum\limits_{C \subseteq N} y_C v(C) \leq v(N)$ for all feasible $y$.
+
+(Subtle point: is it possible that $\sum\limits_{C \subseteq N} y_C v(C) < v(N)$ for all $y$?)
+
+What is the meaning of the dual?
+
+\begin{enumerate}
+  \item
+  Feasible solution: $\sum\limits_{C \subseteq N, \ i \in C} y_C = 1$.
+
+  Example: in the ice cream game, we could have $y_{AB} = y_C = 1$ or $y_{ABC} = 1$ or
+  $y_{AB} = y_{BC} = y_{AC} = \frac{1}{2}$.
+  The first two correspond to partitions $(\{A, B\}, \{C\})$ and $(\{A, B, C\})$.
+  The third corresponds to a ``fractional'' partition: each of $A, B, C$ works for one coalition
+  half the time and another coalition the other half.
+
+  A feasible solution $y$ is a generalized coalition structure.
+  $y_C$ represents the fraction of time each member will contribute to $C$, with a toal time of 1
+  from each player.
+  Any such feasible $y$ is called a \hldef{balancing weight}.
+
+  \item
+  Objective function: $\sum\limits_{C \subseteq N} y_C v(C) \leq v(N)$.
+
+  Example: in the first $y$ above, we have
+  \begin{align*}
+    y_{AB} v(\{A, B\}) + y_C v(\{C\}) &\leq 2 \\
+    \implies\qquad\qquad v(\{A, B\}) + v(\{C\}) &\leq 2.
+  \end{align*}
+  That is, the value of the coalition structure is less than or equal to the value of the grand
+  coalition.
+
+  Then $\sum\limits_{C \subseteq N} y_C v(C)$ is the total value of the fractional partition
+  represented by $y$.
+  The inequality $\sum\limits_{C \subseteq N} y_C v(C) \leq v(N)$ means the value of the grand
+  coalition is maximum over the values of any fractional partition.
+  This generalizes \cref{prop:25.2}.
+
+  A game that satisfies this inequality for all balancing weights $y$ is called a \hldef{balanced}
+  game.
+\end{enumerate}
+
+\begin{thm*}{Bondareva--Shapley}
+  A superadditive cooperative game has a non-empty core if and only if it is balanced.
+\end{thm*}
+
+%%%%%% Lec 27
+\section{Games with Non-empty Cores}
+
+Recall: in superadditive cores with non-empty cores, there is always an outcome in the core with the
+grand coalition.
+This is not necessarily the case for cooperative games in general.
+
+\begin{ex}
+  Let $N = \{1, 2, 3, 4\}$ and
+  \[
+    v(S) = \begin{cases}
+      2 \quad & \text{if } \abs{S} \geq 2 \\
+      0 & \text{otherwise}
+    \end{cases}.
+  \]
+  \cref{prop:25.2} says that a coalition structure in the core has the highest value.
+
+  Here, $v(N) = 2$.
+  But $v(\{1, 2\}, \{3, 4\}) = 4$.
+  So the grand coalition cannot be in any outcome of the core.
+
+  The core is non-empty (check that $\pi = (\{1, 2\}, \{3, 4\})$ with $x = (1, 1, 1, 1)$ is in the
+  core).
+\end{ex}
+
+Checking if the core is non-empty cannot be reduced to checking only the grand coalition.
+But we can relate this to superadditive games.
+
+\begin{defn}{superadditive cover}{superadditive_cover}
+  For any cooperative game $(N, v)$, its \hldef{superadditive cover} is $(N, v^*)$ where for each
+  $S \subseteq N$,
+  \[
+    v^*(S) = \max\{ v(\pi) : \pi \text{ is a partition of } S \}.
+  \]
+\end{defn}
+
+\begin{ex}
+  For the example above, the superadditive cover is $(N, v^*)$ where
+  \[
+    v^*(S) = \begin{cases}
+      4 \quad & \text{if } \abs{S} = 4 \\
+      2 & \text{if } \abs{S} = 2, 3 \\
+      0 & \text{if } \abs{S} = 0, 1
+    \end{cases}.
+  \]
+
+  For instance,
+  \begin{align*}
+    v^*(\{1, 2, 3\})
+    &= \max\{ v(\{1, 2, 3\}), \ v(\{1\}, \{2, 3\}), \ v(\{2\}, \{1, 3\}), \\
+    &\phantom{{}={} \max\{} v(\{3\}, \{1, 2\}), \ v(\{1\}, \{2\}, \{3\}) \} \\
+    &= 2.
+  \end{align*}
+\end{ex}
+
+\begin{exer}{}{27.1}
+  Prove that the superadditive cover is superadditive.
+\end{exer}
+
+\begin{prop}{}{27.2}
+  A cooperative game $(N, v)$ has non-empty core if and only if its superadditive cover $(N, v^*)$
+  has a non-empty core.
+\end{prop}
+
+\begin{ex}
+  Check that $((N), (1, 1, 1, 1))$ is in the core of $(N, v^*)$ above.
+\end{ex}
+
+\begin{thmproof}
+  \begin{itemize}[leftmargin=4em]
+    \item[($\implies$)]
+    Let $(\pi, x)$ be an outcome in the core of $(N, v)$.
+    We show $((N), x)$ is in the core of $(N, v^*)$.
+    From last last lecture, we need to show (1) $v^*(N) = x(N)$ (also showing validity) and (2)
+    $v^*(C) \leq x(C)$ for all $C \subseteq N$.
+    By \cref{prop:25.2}, $v(\pi)$ has the maximum value among all partitions of $N$.
+    So the by definition of the superadditive cover, $v^*(N) = v(\pi)$.
+    \begin{enumerate}[label=(\arabic*)]
+      \item
+      \[
+        v^*(N) = v(\pi) = \sum_{C \in \pi} v(C) = \sum_{C \in \pi} x(C) = \sum_{i \in N} x_i = x(N).
+      \]
+      \item
+      Let $C \subseteq N$.
+      Suppose $v^*(C) = v(\pi')$ for some partition $\pi'$ of $C$.
+      Then
+      \[
+        v^*(C) = v(\pi') = \sum_{C' \in \pi'} v(C') \leq \sum_{C' \in \pi'} x(C') = x(C).
+      \]
+    \end{enumerate}
+    So $((N), x)$ is in the core of $(N, v^*)$.
+
+    \item[($\impliedby$)]
+    Since $(N, v^*)$ is superadditive, there exists a payoff vector $x$ such that $((N), x)$ is in
+    the core (\cref{prop:26.1}).
+    By the definition of the superadditive cover, $v^*(N) = v(\pi)$ for some partition $\pi$ of $N$.
+    We show that $(\pi, x)$ is in the core of $(N, v)$ by showing (1) it is a valid outcome,
+    $v(C) \geq x(C)$ for all $C \in \pi$, and (2) the core condition is satisfied, $v(C) \leq x(C)$
+    for all $C \subseteq N$.
+    (Left as exercises.)
+  \end{itemize}
+\end{thmproof}
+
+\begin{cor}{}{27.3}
+  A cooperative game has a non-empty core if and only if its superadditive cover is balanced.
+\end{cor}
+
+\begin{thmproof}
+  Combine the Bondareva--Shapley theorem with \cref{prop:27.2}.
+\end{thmproof}
+
+%%%%% Lec 28
+\section{Cores of Convex Games}
+
+Recall: a game is convex if $v(S) + v(T) \leq v(S \cup T) + v(S \cap T)$ for all $S, T \subseteq N$.
+Equivalently, $v(S \cup \{i\}) - v(S) \leq v(T \cup \{i\}) - v(T)$ for all
+$S \subseteq T \subseteq N \setminus \{i\}$.
+
+\begin{ex}[Example: bankruptcy game]
+  Bob the Banker is bankrupt.
+  He owes three people money, \$100, \$200, \$300 each.
+  Bob only has \$200.
+  How should Bob's money be divided?
+  Which solutions are stable?
+
+  General model: Bob has \$$M$, he owes money to $n$ people $N$ in amounts $d \in \mathbb{R}^N$.
+  Assume $0 \leq M \leq \sum d_i$.
+
+  Cooperative game: $(N, v)$ where $v(S) = \max \{ 0, M - \sum\limits_{i \in N \setminus S} d_i \}$
+  for each $S \subseteq N$.
+  (The players are taking a pessimistic view.
+  $v(S)$ is the amount left if the remaining players take what they were owed.)
+
+  With the numbers above, $M = 200$, $d = (100, 200, 300)$.
+  Example of values: $v(\{2, 3\}) = 200 - d_1 = 100$, $v(\{1, 2\}) = 0$.
+\end{ex}
+
+\begin{exer}{}{28.1}
+  Show that this is a convex game.
+\end{exer}
+
+\begin{prop}{}{28.2}
+  Convex games have non-empty cores.
+\end{prop}
+
+Idea: the marginal contributions of the players in any permutation form the payoff vector in the
+core.
+
+\begin{thmproof}[Proof (\cref{prop:28.2}).]
+  Since convex games are superadditive, it suffices to find an $x$ such that $((N), x)$ is in the
+  core.
+  Let $\sigma \in S_N$.
+  Without loss of generality, assume $\sigma = (1, \ldots, n)$.
+  Define $x$ by $x_i = \Delta_\sigma(i)$.
+  We need to show (1) $v(N) = x(N)$ and (2) $v(C) \leq x(C)$ for all $C \subseteq N$.
+  \begin{enumerate}[label=(\arabic*)]
+    \item
+    In the proof of \cref{prop:24.1}, $x(N) = \sum\limits_{i = 1}^n \Delta_\sigma(i) = v(N)$.
+    \item
+    Let $C \subseteq N$.
+    Suppose $C = \{i_1, \ldots, i_k\}$ where $i_1 < \cdots < i_k$.
+    For any $i_j$, the ``equivalent convex condition'' gives
+    \[
+      v(\{1, \ldots, i_j\}) - v(\{1, \ldots, i_{j - 1}\}) \geq
+        v(\{i_1, \ldots, i_j\}) - v(\{i_1, \ldots, i_{j - 1}\}).
+    \]
+    So
+    \begin{align*}
+      x(C) &= \Delta_\sigma(i_1) + \cdots + \Delta_\sigma(i_k) \\
+      &= [ v(\{1, \ldots, i_1\}) - v(\{1, \ldots, i_1 - 1\}) ] +{} \\
+      &\phantom{{}={}} \qquad
+        [ v(\{1, \ldots, i_2\}) - v(\{1, \ldots, i_2 - 1\}) ] + \cdots +{} \\
+      &\phantom{{}={}} \qquad
+        [ v(\{1, \ldots, i_k\}) - v(\{1, \ldots, i_k - 1\}) ] \\
+      &\geq [ v(\{i_1\}) - v(\varnothing) ] + [ v(\{i_1, i_2\}) - v(\{i_1\}) ] + \cdots +{} \\
+      &\phantom{{}={}} \qquad
+        [ v(\{i_1, \ldots, i_k\}) - v(\{i_1, \ldots, i_{k - 1}\}) ] \\
+      &= v(\{i_1, \ldots, i_k\}) - v(\varnothing) \\
+      &= v(C).
+    \end{align*}
+  \end{enumerate}
+\end{thmproof}
+
+Note: any vector of marginal contributions is in the core with the grand coalition.
+The set of all vectors in the core is $\mathcal{C}$, which is a polyhedron, which is convex.
+The vector of Shapley values $\varphi$ is a convex combination of the marginal contributions, so it
+is also in the core.
+
+Stronger result: $\mathcal{C}$ is precisely equal to the convex combinations of all marginal
+contribution vectors.
+(We will not prove this.)
+
+\begin{ex}
+  In the bankruptcy game, the Shapley values are
+  $(33 + \frac{1}{3}, 83 + \frac{1}{3}, 83 + \frac{1}{3})$.
+  This is in the core with the grand coalition.
+
+  Ordering the players $\sigma = (3, 2, 1)$, the marginal contributions vector $(100, 100, 0)$ is
+  also in the core.
+\end{ex}
 
 %---------------
 \end{document}
