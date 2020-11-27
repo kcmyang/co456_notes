@@ -4231,6 +4231,470 @@ For general weights\dots
 
 Note: a maximum weight matching might not be a matching with the maximum number of edges.
 
+%%%%% Topic: Mechanism design
+\coursetopic{Mechanism Design}
+
+%%%%% Lec 32
+\section{Mechanism Design --- Ideal Auctions}
+
+Mechanism design: we want to design games so that players are incentivized to achieve certain
+overall goals.
+
+Examples:
+\begin{itemize}
+  \item
+  Elections: If more people prefer A to B, then A should win.
+  \item
+  Auctions: The player who values the item the most should win.
+  Or, maximize revenue for the seller.
+  \item
+  Sports tournaments: Best team should win, teams play the best they can.
+\end{itemize}
+
+Problem: players look after themselves, and will find loopholes and advantages to avoid playing as
+the game designer intended.
+
+Main question: how should we set the rules so that players who play for themselves will also achieve
+these global goals?
+
+\subsection{Ideal auctions}
+
+In an auction, the auctioneer is selling something and players bid on the item.
+The auctioneer needs to decide the rules for two things: (1) who wins what item; (2) who pays what
+amount.
+In the second-price auction: (1) highest bidder wins; (2) winner pays second highest bid.
+
+Nice properties of the second-price auction:
+\begin{itemize}
+  \item
+  Recall: a player bidding their valuation is a dominant strategy (``truthful bidding'').
+  This is easy to play: even without knowing everyone else's valuation, bidding one's own valuation
+  will maximize utility.
+  (Truthful bidding is not a dominant strategy for the first-price auction; exercise.)
+  \item
+  If players give truthful bids, then their utility is never negative.
+  (This is not true for the ``all-pay'' auction, where every player pays regardless if they win or
+  lose.)
+\end{itemize}
+
+\begin{defn}{DSIC}{DSIC}
+  An auction is \hldef{dominant-strategy incentive-compatible (DSIC)} if truthful bidding is a
+  dominant strategy, and yields non-negative utility.
+\end{defn}
+
+Note: ``dominant strategy'' here means ``weakly dominant'', except we don't require a case that
+decreases utility.
+
+Having DSIC is not good enough.
+For example, an auction where we give the item for free to player 1 is DSIC.
+We need an overall goal: the item should go to the player with the highest valuation.
+``Social welfare'': the sum total of values recevied by all players.
+For one-item auctions, only one player receives the item.
+If player $i$ wins the auction, then they receive value $v_i$ (their valuation).
+Remaining players receive nothing.
+So the social welfare is $v_i$.
+To maximize social welfare in this case, we make sure that the player with the highest valuation
+wins.
+This is easy if players bid truthfully.
+
+\begin{defn}{welfare-maximizing}{welfare_maximizing}
+  An auction is \hldef{welfare-maximizing} if truthful bidding results in maximum social welfare.
+\end{defn}
+
+Last good property: second-price auction is easy to run.
+We can quickly determine the highest bidder and the second highest bid.
+
+\begin{defn}{ideal}{ideal_auction}
+  An auction is \hldef{ideal} if
+  \begin{enumerate}
+    \item it is DSIC;
+    \item is is welfare-maximizing; and
+    \item it can be implemented efficiently.
+  \end{enumerate}
+\end{defn}
+
+\begin{thm}{}{32.1}
+  The second-price auction is ideal.
+\end{thm}
+
+Result from the future: this is the only single-item auction that is ideal.
+
+%%%%% Lec 33
+\section{Sponsored Search Auctions}
+
+Search engines may show ads as the first entries of a search result.
+Selecting which ads to show and their order of placement is done through auctions.
+
+\subsection{Model}
+
+Suppose there are $k \geq 1$ slots for sponsored links on a search results page.
+There are advertisers $N$ bidding for these slots with related keywords.
+The slots have different ``values'': top ones tend to get clicked more often, quantified with the
+``click-through rate'' (CTR).
+For each slot $j$, let $\alpha_j \in [0, 1]$ be the probability that a user clicks on an ad at slot
+$j$.
+
+Assumption 1: $\alpha_1 \geq \alpha_2 \geq \alpha_3 \geq \cdots$.
+Assumption 2: CTR is independent of the quality of the ad.
+
+We are looking for ideal auctions: DSIC, welfare-maximizing, and efficient implementation.
+Need to determine who wins what and who pays what.
+General approach:
+\begin{enumerate}[label=(\arabic*)]
+  \item
+  Assuming truthful bidding, how can we assign the items in a way that is welfare-maximizing and
+  efficient?
+  \item
+  Given the way we assign items, how can we set prices so that it is DSIC?
+\end{enumerate}
+
+\subsection{Social welfare}
+
+We want to maximize the overall value for the players.
+What is the value to a player?
+
+Each player $i$ has a valuation $i$ of how much one click on their ad is worth.
+If they are assigned a slot with CTR $x_i$, then their expected value is $v_i x_i$.
+Social welfare is then $\sum_{i \in N} v_i x_i$.
+
+\begin{ex}
+  Assume 2 slots and 3 players.
+  CTR: $\alpha_1 = 0.7$, $\alpha_2 = 0.5$.
+  Player valuations: $v_1 = 10$, $v_2 = 9$, $v_3 = 2$.
+
+  If we assign slot 1 to player 3 and slot 2 to player 1, then the social welfare is
+  $10(0.5) + 2(0.7) = 6.4$.
+\end{ex}
+
+What is a rule that maximizes social welfare?
+Assign slot 1 to the player with the highest valuation, slot 2 to the second highest, etc.
+This can be efficiently implemented.
+This resolves (1) above.
+
+Note: efficiency is critical.
+Lots of sponsored search auctions run at the same time, so they have to be almost instantaneous.
+
+\subsection{Payment rule}
+
+We want a payment rule that is DSIC, so players are incentivized to bid truthfully.
+This requires Myerson's Lemma.
+
+Aside: consider the generalized second-price auction.
+The player who wins the $j$-th slot will pay the $(j + 1)$-st highest bid times their CTR
+$\alpha_j$.
+This is not DSIC.
+In our example above, player 1 gets CTR $\alpha_1$ and value $v_1 \alpha_1 = 7$.
+Their payment is $v_2 \alpha_1 = 6.3$ and utility $0.7$.
+If player 1 bids 8 instead, then they get CTR $\alpha_2$ and value $v_1 \alpha_2 = 5$.
+Their payment is $v_3 \alpha_2 = 1$ and utility $4 > 0.7$.
+Truthful bidding here is not a dominant strategy.
+
+%%%%% Lec 34
+\section{Myerson's Lemma (I)}
+
+Myerson's Lemma characterizes auctions that have a DSIC payment rule, and gives a formula for the
+payment rule.
+We first need an abstraction of the auction model.
+
+\begin{defn}{single-parameter environment}{single_parameter_environment}
+  In a \hldef{single-parameter environment}, we are given
+  \begin{itemize}
+    \item a set of players $N$;
+    \item a private valuation $v_i \geq 0$ for each $i \in N$, which is player $i$'s valuation for
+      one unit of goods; and
+    \item a set $X \subseteq \mathbb{R}^N$ of vectors $(x_1, \ldots, x_n)$ that describes feasible
+      allocations, \emph{i.e.}, $x_i$ is the amount of goods given to player $i$.
+  \end{itemize}
+\end{defn}
+
+Note: this is ``single-parameter'' since each player has only one piece of private information.
+
+\begin{ex}
+  In a single-item auction, $X$ is the set of all standard basis vectors in $\mathbb{R}^n$
+  ($n$-tuples with one 1 and $n - 1$ 0's).
+
+  In the sponsored search auction, $X$ is the set of vectors where for each slot $j$, at most one
+  $i \in N$ satisfies $x_i = \alpha_j$, 0 otherwise.
+\end{ex}
+
+We are interested in mechanisms in this environment, \emph{i.e.}, rules of the auction.
+Let $B \subseteq \mathbb{R}^N$ be the set of all possible player bids.
+
+\begin{defn}{direct revelation mechanism}{direct_revelation_mechanism}
+  Given a single-parameter environment, a \hldef{direct revelation mechanism}:
+  \begin{itemize}
+    \item collects bids $b \in B$ from all players;
+    \item chooses a feasible allocation $x(b) \in X$ based on the bids; and
+    \item chooses a payment $p(b) \in \mathbb{R}^N$ where player $i$ pays $p_i(b)$.
+  \end{itemize}
+  We call $x \colon B \to X$ an \hldef{allocation rule}, and $p \colon B \to \mathbb{R}^N$ a
+  \hldef{payment rule}.
+
+  The utility for a player $i$ is $u_i(b) = v_i x_i(b) - p_i(b)$.
+\end{defn}
+
+As part of the DSIC condition, we assume $0 \leq p_i(b) \leq v_i x_i(b)$, \emph{i.e.}, truthful
+bidding will result in non-negative utility.
+
+\begin{ex}
+  For the second-price auction,
+  \[
+    x_i(b) = \begin{cases}
+      1 \quad & b_i \text{ is maximum in } b \\
+      0 & \text{otherwise}
+    \end{cases}
+  \]
+  and
+  \[
+    p_i(b) = \begin{cases}
+      \max\limits_{j \neq i} b_j \quad & b_i \text{ is maximum in } b \\
+      0 & \text{otherwise}
+    \end{cases}.
+  \]
+\end{ex}
+
+\subsection{Two terms for an allocation rule}
+
+\begin{enumerate}
+  \item
+  An allocation rule $x \colon B \to X$ is \hldef{implementable} if there exists a payment rule
+  $p \colon B \to \mathbb{R}^N$ such that $(x, p)$ is DSIC.
+
+  The single-item auction where we give the item to the highest bidder is implementable by using
+  the second-price rule as payment.
+
+  \item
+  An allocation rule $x \colon B \to X$ is \hldef{monotone} if for all $i \in N$ and for all
+  $b_{-i} \in B_{-i}$, $x_i(z, b_{-i}) \geq x_i(y, b_{-i})$ whenever $z \geq y$.
+
+  Translation: the higher you bid, the more you get.
+
+  For single-item auctions, ``highest bid wins'' is monotone.
+  However, ``second highest bid wins'' is not monotone (you can lose things by bidding higher).
+\end{enumerate}
+
+\subsection{Main result}
+
+\begin{thm}{Myerson's Lemma}{34.1}
+  For a single parameter environment, an allocation rule $x \colon B \to X$ is implementable if and
+  only if $x$ is monotone.
+  Moreover, given a monotone allocation rule $x \colon B \to X$, there exists a unique payment rule
+  $p \colon B \to \mathbb{R}^N$ such that $(x, p)$ is DSIC and $p_i(b) = 0$ whenever $b_i = 0$.
+\end{thm}
+
+%%%%% Lec 35
+\section{Myerson's Lemma (II)}
+
+\begin{lem}{}{35.1}
+  If an allocation rule $x \colon B \to X$ is implementable, then $x$ is monotone.
+\end{lem}
+
+\begin{thmproof}
+  Suppose $x$ is implementable.
+  Then there exists a payment rule $p \colon B \to \mathbb{R}^N$ such that $(x, p)$ is DSIC.
+  Fix a player $i \in N$ and bids $b_{-i} \in B_{-i}$.
+  We use $x(y)$ and $p(y)$ to represent $x_i(y, b_{-i})$ and $p_i(y, b_{-i})$.
+  We want to prove: if $y \geq z$, then $x(y) \geq x(z)$.
+  Assume $y \geq z$.
+
+  Key observation: the rules $(x, p)$ are defined independent of the players' valuations.
+  \begin{enumerate}
+    \item
+    $(x, p)$ is DSIC if player $i$'s valuation is $y$.
+    So the utilty of bidding $y$ is at least the utility of bidding $z$.
+    Hence $y \cdot x(y) - p(y) \geq y \cdot x(z) - p(z)$.
+    \item
+    $(x, p)$ is DSIC if player $i$'s valuation is $z$.
+    Similarly, $z \cdot x(z) - p(z) \geq z \cdot x(y) - p(y)$.
+  \end{enumerate}
+  Rearranging the inequalities gives $z(x(y) - x(z)) \leq p(y) - p(z) \leq y(x(y) - x(z))$.
+  (This is called the \hldef{payment sandwich}, which holds for DSIC rules.)
+  Since $y \geq z \geq 0$, we get $x(y) - x(z) \geq 0$.
+  So $x(y) \geq x(z)$.
+\end{thmproof}
+
+For converse, we will only prove the case where $x$ is piecewise constant.
+Approach: assume $x$ is monotone and $(x, p)$ is DSIC.
+Derive that $p$ is unique with $p_i(b) = 0$ whenever $b_i = 0$.
+Then prove that using this particular $p$, $(x, p)$ is indeed DSIC.
+
+Describing a generic $x$ that is monotone and piecewise constant.
+There are jump points $\bar{z}_1 < \bar{z}_2 < \cdots < \bar{z}_q$ such that $x$ is constant in the
+intervals $[0, \bar{z}_1], (\bar{z}_1, \bar{z}_2], \ldots, (\bar{z}_{q - 1}, \bar{z}_q],
+  (\bar{z}_q, \infty)$.
+Define $h_j$ to be the jump at $\bar{z}_j$ (that is,
+$h_j = \lim_{w \to \bar{z}_j^+} [ x(w) - x(\bar{z}_j) ]$).
+\begin{center}
+  \includegraphics[width=0.4\textwidth]{35-1}
+\end{center}
+
+\begin{lem}{}{35.2}
+  If $x$ is monotone and piecewise constant, and $(x, p)$ is DSIC with $p_i(b) = 0$ whenever
+  $b_i = 0$, then $p$ is unique.
+\end{lem}
+
+\begin{thmproof}
+  We first show $p$ is also piecewise constant.
+  (If $z$ is inside an interval, then $p'(z) = 0$.)
+  Assume $y > z$.
+  Suppose $z \in (\bar{z}_j, \bar{z}_{j + 1})$ for some $j$.
+  We assume DSIC, so the payment sandwich applies.
+  Divide by $y - z$ to get
+  \[
+    z \frac{x(y) - x(z)}{y - z} \leq \frac{p(y) - p(z)}{y - z} \leq y \frac{x(y) - x(z)}{y - z}.
+  \]
+  Take the limit as $y \to z^+$:
+  \[
+    \lim_{y \to z^+} \frac{x(y) - x(z)}{y - z} = x'(z) = 0
+  \]
+  since $x$ is constant at $z$.
+  So both ends of the inequalities approach 0.
+  By the squeeze theorem,
+  \[
+    \lim_{y \to z^+} \frac{p(y) - p(z)}{y - z} = p'(z) = 0.
+  \]
+  Thus $p$ is piecewise constant with the same jump points $\bar{z}_1, \ldots, \bar{z}_q$.
+
+  Let $z = \bar{z}_j$ for some $j$.
+  Looking at the payment sandwich, we have
+  \[
+    \lim_{y \to z^+} y(x(y) - x(z)) = z \cdot h_j = \lim_{y \to z^+} z(x(y) - x(z)).
+  \]
+  By the squeeze theorem,
+  \[
+    \lim_{y \to z^+} [p(y) - p(z)] = z \cdot h_j = \bar{z}_j h_j.
+  \]
+  So the payment jump at $\bar{z}_j$ is $\bar{z}_j h_j$.
+
+  By assumption, $p(0) = 0$, so this uniquely defines the function $p$: if $j$ is the largest index
+  where $z \geq \bar{z}_j$, then
+  \[
+    p(z) = p_i(z, b_{-i}) = \sum_{k = 1}^j \bar{z}_k h_k.
+  \]
+\end{thmproof}
+
+\pagebreak
+Visualization:
+\begin{center}
+  \includegraphics[width=0.6\textwidth]{35-2}
+\end{center}
+The payment is the area to the ``left'' of $x$.
+
+\begin{lem}{}{35.3}
+  The payment rule $p$ from \cref{lem:35.2} is DSIC.
+\end{lem}
+
+\begin{thmproof}[Proof (by picture).]
+  \begin{center}
+    \includegraphics[width=\textwidth]{35-3}
+  \end{center}
+  The utilities for (2) and (3) are at most the utility of (1).
+  Utility of (1) is non-negative.
+  Hence DSIC.
+\end{thmproof}
+
+%%%%% Lec 36
+\section{Applying Myerson's Lemma}
+
+Recall: payment rule is $p_i(z, b_{-i}) = \sum\limits_{k = 1}^j \bar{z}_k h_k$ (area to the ``left''
+of $x$).
+
+\begin{enumerate}
+  \item
+  Single item auction.
+
+  Let $x$ be the allocation rule that gives the item to the highest bidder (with a consistent
+  tie-breaking rule).
+  This is monotone.
+  Consider a player $i$ and bids $b_{-i} = B_{-i}$.
+  Let $B = \max_{j \neq i} b_j$.
+  The allocation function for player $i$:
+  \begin{center}
+    \includegraphics[width=0.5\textwidth]{36-1}
+  \end{center}
+  There is one jump at $z = B$ with height 1.
+  When $b_i > B$, player $i$ wins and the payment is $B \cdot 1 = B$.
+  This is the second-price rule, and it is unique assuming $b_i = 0$ implies $p_i = 0$.
+  (This proves \cref{thm:32.1}).
+
+  \item
+  Sponsored search auction.
+
+  There are $k$ slots with CTRs $\alpha_1 \geq \alpha_2 \geq \cdots \geq \alpha_k$.
+  Out allocation function $x$ assigns $\alpha_j$ to the $j$-th highest bidder.
+  This is monotone (check).
+  Apply Myerson's lemma for the payment rule.
+
+  Consider a player $i$ and bids $b_{-i} \in B_{-i}$.
+  Assume $b_1 \geq b_2 \geq \cdots \geq b_k$ (ignore the rest).
+  Player $i$ gets $\alpha_k$ if $b_k < b_i \leq b_{k - 1}$, or $\alpha_{k - 1}$ if
+  $b_{k - 1} < b_i \leq b_{k - 2}$, and so on.
+  \begin{center}
+    \includegraphics[width=0.4\textwidth]{36-2}
+  \end{center}
+  Each jump has height $\alpha_{j - 1} - \alpha_j$.
+  Using the formula,
+  \[
+    p_i(z) = \sum_{\{ j \, : \, b_j < z\}} b_j (\alpha_j - \alpha_{j + 1})
+  \]
+  using $\alpha_{k + 1} = 0$.
+  This is the unique DSIC payment rule.
+\end{enumerate}
+
+\begin{ex}
+  2 slots with $\alpha_1 = 0.7$, $\alpha_2 = 0.5$.
+  3 bidders: $v_1 = 10$, $v_2 = 9$, $v_3 = 2$.
+
+  Allocation for player 1:
+  \begin{center}
+    \includegraphics[width=0.4\textwidth]{36-3}
+  \end{center}
+  Payment is $2.8$.
+
+  Allocation for player 2:
+  \begin{center}
+    \includegraphics[width=0.4\textwidth]{36-4}
+  \end{center}
+  Payment is 1.
+\end{ex}
+
+%%%%% Lec 37
+\section{Knapsack Auction (I)}
+
+Recall: an auction is ideal if it is (1) DSIC; (2) welfare-maximizing; (3) efficient.
+We consider an auction that cannot be ideal.
+
+\begin{ex}
+  We are managing advertising slots for a TV station.
+  We have $T$ seconds to fill.
+  There are potential advertisers $N$.
+  Advertiser $i$ has an ad of length $t_i$ and gets value $v_i$ if it airs.
+  We run an auction to determine whose ads to air.
+
+  One instance:
+  \begin{center}
+    \includegraphics[width=\textwidth]{37-1}
+  \end{center}
+  The set of feasible allocations is $X = \{ x \in \{0, 1\}^N : \sum_{i \in N} t_i x_i \leq T \}$.
+  Social welfare is $\sum_{i \in N} v_i x_i$.
+  For example, taking $x = (1, 1, 0, 0)$ gives social welfare $20 + 56 = 76$.
+
+  To maximize social welfare, we need $\max \{ v^T x : x \in X \}$.
+
+  Recall: first stage of designing this auction is to assume players bid truthfully, and find an
+  auction rule that is welfare-maximizing.
+  Then Myerson's lemma gives us a payment rule that is DSIC.
+
+  Problem: maximizing social welfare here is equivalent to the knapsack problem.
+  This is NP-hard, so it is not possible to find an optimal solution efficiently (unless P = NP).
+  We cannot fulfill both (2) and (3) for an ideal auction simultaneously.
+
+  Solution: relax either (2) or (3).
+  We should not give up (3) as we want this to be practical (run in real-time).
+  So we should give up (2): instead of finding a welfare-maximizing allocation, we will find an
+  approximation of the allocation that is ``close'' to maximum, while keeping efficiency.
+\end{ex}
+
 %---------------
 \end{document}
 %---------------
