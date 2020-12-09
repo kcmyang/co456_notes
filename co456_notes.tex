@@ -4695,6 +4695,397 @@ We consider an auction that cannot be ideal.
   approximation of the allocation that is ``close'' to maximum, while keeping efficiency.
 \end{ex}
 
+%%%%% Lec 38
+\section{Knapsack Auction (II)}
+
+Goal: approximate the welfare-maximizing function for the knapsack auction.
+
+Aside: typically with approximation algorithms, we want some performance guarantee (``the solution
+produced by the algorithm must be at least this close to the theoretical maximum'').
+
+\begin{ex}
+  \[
+    \begin{array}{c|cccc}
+      i & 1 & 2 & 3 & 4 \\
+      \hline
+      t_i & 2 & 7 & 3 & 5 \\
+      v_i & 20 & 56 & 21 & 25 \\
+      t_i / v_i & 10 & 8 & 7 & 5
+    \end{array}
+  \]
+  and $T = 10$.
+\end{ex}
+
+Idea: we have limited space, so we want to fill in each unit with as much value as possible.
+Therefore we should calculate the value density.
+Higher density should give better value.
+We sort items in non-increasing value density, \emph{i.e.},
+$\frac{v_1}{t_1} \geq \frac{v_2}{t_2} \geq \cdots \geq \frac{v_n}{t_n}$.
+
+First try: pick items $1, 2, \ldots$ until we cannot put the next one into the knapsack.
+In the example above, pick 1 and 2: $t_1 + t_2 = 9 \leq 10$, no room for 3; total value 76.
+Is this a good approximation?
+No, there are cases where the solution produced is very bad.
+
+\begin{ex}
+  2 players: $v_1 = t_1 = 1$; $v_2 = T - 1$ and $t_2 = T$.
+  1 has higher density than 2.
+  If we pick 1, then we do not have room for 2.
+  Algorithm produces value 1.
+  Obvious optimal: pick 2, optimal value $T - 1$.
+  Our solution is $\frac{1}{T - 1}$ of the optimal.
+\end{ex}
+
+Better idea: suppose we stop at item $i$ above.
+Check the value of item $i + 1$.
+If $v_{i + 1} > v_1 + \cdots + v_i$, then we will say that $i + 1$ is the only winner.
+(Assumption: $t_i \leq T$ for all $i$.)
+
+\begin{ex}
+  2-player example above.
+  Stop at $i = 1$.
+  We see $v_2 > v_1$, so we pick $v_2$ instead.
+\end{ex}
+
+Full approximation algorithm: assume $N = \{1, \ldots, n\}$ with
+$\frac{v_1}{t_1} \geq \frac{v_2}{t_2} \geq \cdots \geq \frac{v_n}{t_n}$.
+\begin{enumerate}
+  \item Find $i$ such that it is the largest index with $t_1 + \cdots + t_i \leq T$.
+  \item If $v_1 + \cdots + v_i \geq v_{i + 1}$, then $\{1, \ldots, i\}$ are the winners.
+  \item Otherwise, $\{i + 1\}$ is the only winner.
+\end{enumerate}
+
+Suppose APX is the value of the winners produced by the approximation algorithm, OPT is the actual
+optimal value.
+
+\begin{thm}{}{38.1}
+  $\text{APX} \geq \frac{1}{2} \text{OPT}$.
+
+  (The solution produced by the approximation algorithm is guaranteed to be at least halfway to the
+  optimal solution.)
+\end{thm}
+
+\begin{thmproof}
+  A welfare-maximizing solution is optimal for this integer program (IP):
+  $\max \{ v^T x : t^T x \leq T, \ x_i \in \{0, 1\} \ \forall i \}$.
+  Optimal value: OPT.
+
+  Its LP relaxation (LP): $\max \{ v^T x : t^T x \leq T, \ 0 \leq x_i \leq 1 \ \forall i \}$.
+  (Solutions can be fractional.)
+
+  Let $i$ be the largest index with $t_1 + \cdots + t_i \leq T$.
+  Consider the solution $x$ where
+  \[
+    x_1 = \cdots = x_i = 1, \ x_{i + 1} = \frac{T - t_1 - \cdots - t_i}{t_{i + 1}}, \
+    x_{i + 2} = \cdots = x_n = 0.
+  \]
+  (Idea: fill in the remaining space with a fraction of item $i + 1$. In the first example above,
+  $x_1 = x_2 = 1$, $x_3 = \frac{1}{3}$, and $x_4 = 0$.)
+
+  As we have completely filled in the knapsack with the highest-density items, $x$ is optimal.
+  Suppose the optimal value of (LP) is $v^*$ (obtained by $x$).
+  Since (LP) is a relaxation of (IP), $\text{OPT} \leq v^*$.
+  We want to prove $\text{APX} \geq \frac{v^*}{2}$.
+
+  Let $S = \{1, \ldots, i\}$.
+  We see that $v^* \leq v_1 + \cdots + v_i + v_{i + 1} = v(S) + v_{i + 1}$.
+  Two cases:
+  \begin{enumerate}
+    \item
+    If $v(S) \geq v_{i + 1}$, then the algorithm picks $S$, so $\text{APX} = v(S)$.
+    Then $v^* \leq v(S) + v_{i + 1} \leq v(S) + v(S) = 2 \text{APX}$.
+    \item
+    If $v(S) < v_{i + 1}$, then the algorithm picks $\{i + 1\}$, so $\text{APX} = v_{i + 1}$.
+    Then $v^* \leq v(S) + v_{i + 1} < 2 v_{i + 1} = 2 \text{APX}$.
+  \end{enumerate}
+  So $\text{APX} \geq \frac{v^*}{2} \geq \frac{1}{2} \text{OPT}$.
+\end{thmproof}
+
+\begin{exer}{}{38.2}
+  Formally prove $x$ is optimal in the proof of \cref{thm:38.1} using duality.
+\end{exer}
+
+\begin{exer}{}{38.3}
+  Prove that the allocation rule derived from the approximation algorithm is monotone.
+\end{exer}
+
+Myerson's lemma gives a payment rule for our allocation.
+A player either wins or not, so the allocation function looks like:
+\begin{center}
+  \includegraphics[width=0.4\textwidth]{38-1}
+\end{center}
+Say this is for player $j$ and the jump occurs at $\bar{b}_j$.
+The payment for winning is then $\bar{b}_j$.
+
+How can we find $\bar{b}_j$?
+Maybe binary search, or use some logic.
+
+\begin{ex}
+  \[
+    \begin{array}{c|cccc}
+      i & 1 & 2 & 3 & 4 \\
+      \hline
+      t_i & 2 & 7 & 3 & 5 \\
+      v_i & 20 & 56 & 21 & 25 \\
+      t_i / v_i & 10 & 8 & 7 & 5
+    \end{array}
+  \]
+  and $T = 10$.
+
+  Approximation algorithm picks 1 and 2 as winners.
+  What is the payment for player 2?
+  The allocation is monotone, so to find $\bar{b}_2$, we need to lower $v_2$ until the approximation
+  algorithm does not pick player 2.
+  As long as $\frac{v_2}{t_2} \geq 7$, the algorithm will pick 2.
+  So player 2 can go as low as 49.
+
+  What happens if $v_2$ goes below 49?
+  Say it has value density $\geq 5$.
+  The approximation algorithm will pick 1 and 3 with combined value 41, then look at $v_2$.
+  If $v_2 > 41$, then the algorithm will still pick 2.
+  If $v_2 \leq 41$, then the algorithm will stick with 1 and 3.
+  So $\bar{b}_2 = 41$, and the payment is 41.
+\end{ex}
+
+%%%%% Lec 39
+\section{Voting Mechanism}
+
+Voting: voters cast their votes and a voting mechanism outputs a result that is supposed to
+represent the will of the people.
+
+If there are 2 candidates, this is easy: decide on the majority.
+Reflects the preferences of the people.
+
+\subsection{Condorcet's paradox}
+
+There are 3 candidates, a, b, and c.
+There are 3 voters: $a >_1 b >_1 c$, $b >_2 c >_2 a$, $c >_3 a >_3 b$.
+
+A majority of voters prefers $a$ over $b$, $b$ over $c$, and $c$ over $a$.
+So we should say that $a > b > c > a$, which is not possible.
+If we only choose 1 candidate, then a majority wants a different one.
+
+This could lead to ``strategic voting'': a voter may be incentivized to not vote for their
+preferred candidate.
+
+\begin{ex}
+  $a, b$ are front runners, more prefer $a$ over $b$.
+  A group of voters prefer $c$, who has no chance of winning.
+  But they would rather $b$ win than $a$, so they vote for $b$ instead.
+\end{ex}
+
+Problem: the usual voting mechanism does not incentivize voters to vote truthfully.
+So the votes that are submitted do not represent the will of the people.
+
+Question: is there a voting mechanism where truthful voting is a dominant strategy?
+
+Answer: no, if we want our voting mechanism to have obvious good properties.
+
+\subsection{Social welfare and social choice}
+
+Set up: candidates $A$, voters $\{1, \ldots, n\}$.
+Let $L$ be a set of all total orders on $A$.
+(A total order is a relation $<$ on $A$ that is antisymmetric and transitive.
+Antisymmetric: if $a \neq b$, then $a > b$ or $b > a$ but not both.
+Transitive: if $a > b$ and $b > c$, then $a > c$.)
+Each voter $i$ has a total order of preferences $<_i \in L$.
+$a <_i b$ means voter $i$ prefers $b$ over $a$.
+A collection of all voter preferences $(<_1, \ldots, <_n)$ is in $L^n$.
+
+Given a collection of voter preferences (how voters would vote), there are two outcomes that may be
+generated by a voting mechanism:
+\begin{enumerate}
+  \item
+  A \hldef{social welfare function} will output another total order on $A$ that represents
+  ``society's preference''.
+  Usually denoted $F \colon L^n \to L$.
+  \item
+  A \hldef{social choice function} will output one candidate from $A$ that represents ``society's
+  choice''.
+  Usually denoted $f \colon L^n \to A$.
+\end{enumerate}
+
+\subsection{Properties of a social welfare function}
+
+Let $F \colon L^n \to L$ and $(<_1, \ldots, <_n) \in L^n$.
+Suppose $F(<_1, \ldots, <_n) = {<}$.
+
+Good property 1: \hldef{unanimity}.
+If every voter prefers $a$ over $b$, then the society prefers $a$ over $b$.
+(If $b <_i a \ \forall i \in N$, then $b < a$ in $F$.)
+
+Good property 2: \hldef{independence of irrelevant alternatives (IIA)}.
+The society's preference between two candidates should only depend on the individual voters'
+preferences of these two candidates, and not on others.
+Suppose $(<_1, \ldots, <_n), (<_1', \ldots, <_n') \in L^n$ where $F(<_1, \ldots, <_n) = {<}$ and
+$F(<_1', \ldots, <_n') = {<'}$.
+For two candidates $a, b \in A$, $a <_i b \iff a <_i' b$ for each $i \in N$ (the relative rank of
+$a, b$ does not change between $<_i$ and $<_i'$) implies $a < b \iff a <' b$ (the relative rank of
+$a, b$ for $F$ does not change between $<$ and $<'$).
+
+Flawed illustration of IIA: suppose you can choose between studying game theory and cryptography.
+Of course, you would choose game theory.
+Now you have the additional option of studying Galois theory, and you decide to study cryptography
+instead.
+This should not happen under IIA.
+
+Bad property: \hldef{dictatorship}.
+The society's preferences completely agree with one particular voter's preferences in all cases.
+For all $(<_1, \ldots, <_n) \in L^n$, $F(<_1, \ldots, <_n) = {<_i}$.
+
+\begin{thm}{Arrow's impossibility theorem}{39.1}
+  Every social welfare function over a set of at least 3 candidates that satisfies unanimity and IIA
+  is a dictatorship.
+\end{thm}
+
+If we want the good properties, we must also have the bad property.
+No way to design a good voting mechanism.
+
+%%%%% Lec 40
+\section{Arrow's Impossibility Theorem}
+
+\begin{thmproof}[Sketch proof (\cref{thm:39.1}).]
+  Suppose $F \colon L^n \to L$ satisfies unanimity and IIA.
+  \begin{enumerate}
+    \item
+    We prove that given a candidate $b$, if each voter ranks $b$ at the top or bottom of their list,
+    then $F$ also ranks $b$ at the top or the bottom.
+
+    Suppose otherwise, and there exist $a, c \in A$ such that $F$ ranks $c < b < a$.
+    \begin{center}
+      \includegraphics[width=0.9\textwidth]{40-1}
+    \end{center}
+    If we move $c$ just above $a$ in each voter's ranking, the relative rankings of $a$ and $b$ do
+    not change.
+    By IIA, the relative rankings of $a$ and $b$ do not change in $F$.
+    Similar for the relative rankings of $b$ and $c$.
+    So $F$ keeps $c < b < a$ in the new preferences.
+    But $c$ is higher than $a$ in all voters' lists, so by unanimity, $c > a$ in $F$.
+    This contradicts transitivity.
+
+    \item
+    Find a potential voter that can be a dictator.
+    Take an arbitrary voter preference $P \in L^n$.
+    Create a sequence of preferences $P_0, P_1, \ldots, P_n$ by first moving $b$ to the bottom, then
+    moving $b$ to the top one voter at a time.
+    \begin{center}
+      \includegraphics[width=\linewidth]{40-2}
+    \end{center}
+
+    \item
+    Let $a, c$ be two candidates other than $b$.
+    (They exist since there are at least 3 candidates.)
+    We will show that $F$ agrees with voter $i$ on the relative ranking of $a, c$.
+    WLOG, assume voter $i$ ranks $a$ above $c$ in the original $P$.
+    Create a new voter preference $P^*$ by moving $a$ to the top of the list for voter $i$.
+    \begin{center}
+      \includegraphics[width=\linewidth]{40-3}
+    \end{center}
+    Between $P$ and $P^*$, the relative rankings of $a, c$ do not change.
+    By IIA, $F$ ranks $a, c$ the same in $P$ and $P^*$.
+    Goal: $F$ ranks $a$ above $c$ in $P^*$ (agreeing with voter $i$.)
+
+    Compare $P_{i - 1}$ and $P^*$.
+    The relative rankings of $a, b$ do not change.
+    By IIA, $F$ ranks $a, b$ the same in $P_{i - 1}$ and $P^*$.
+    $F$ ranks $b$ at the bottom in $P_{i - 1}$, so $a > b$ for both $P_{i - 1}$ and $P^*$.
+
+    Compare $P_i$ and $P^*$.
+    The relative rankings of $b, c$ do not change.
+    By IIA, $F$ ranks $b, c$ the same in $P_i$ and $P^*$.
+    $F$ ranks $b$ at the top in $P_i$, so $b > c$ for both $P_i$ and $P^*$.
+
+    By transitivity, $F$ ranks $a > c$, which matches the ranking for voter $i$.
+    So $F$ agrees with voter $i$ on the relative rankings of any two candidates other than $b$.
+
+    \item
+    Let $d$ be any candidate other than $b$.
+    We will show that $F$ agrees with voter $i$ on $b, d$.
+    There exists candidate $e$ that is not $b, d$.
+    Run the arguments from (2) and (3) with $e$ instead of $b$.
+    This gives us a voter $j$ such that $F$ agrees with voter $j$ for any two candidates that are
+    not $e$.
+    We show that $i = j$.
+
+    Suppose otherwise.
+    Say $j < i$.
+    Consider $P_{i - 1}$.
+    $F$ ranks $b$ at the bottom, so $d > b$.
+    \begin{center}
+      \includegraphics[width=0.4\textwidth]{40-4}
+    \end{center}
+    For voter $j$, $d$ is lower than $b$.
+    And $F$ must agree with voter $j$ in all cases not involving $e$.
+    So $F$ ranks $b > d$.
+    This contradicts antisymmetry of $F$.
+
+    Suppose $j > i$.
+    Considrer $P_i$.
+    $F$ ranks $b > d$.
+    \begin{center}
+      \includegraphics[width=0.4\textwidth]{40-5}
+    \end{center}
+    But voter $j$ ranks $d$ over $b$, and $F$ agrees with voter $j$.
+    So $d > b$ for $F$, contradiction.
+
+    So $i = j$.
+  \end{enumerate}
+
+  So $F$ agrees with voter $i$ on the relative rankings of any two candidates.
+  Hence voter $i$ is a dictator.
+\end{thmproof}
+
+%%%%% Lec 41
+\section{Gibbarth--Satterthwaite Theorem}
+
+A social choice function $f \colon L^n \to A$ selects one candidate to represent the preferences of
+the voters.
+Just like social welfare functions, there cannot be a social choice function with good properties
+without the bad.
+
+Good property: \hldef{strategy-proof}.
+A voter cannot change the society's choice to something they like better by changing their
+preferences.
+We say that $f$ can be \hldef{strategically manipulated} by voter $i$ if there exist $a, b \in A$,
+$(<_1, \ldots, <_n) \in L^n$, and $<_i' \in L$ such that $a <_i b$ (voter $i$ prefers $b$ over $a$),
+$f(<_1, \ldots, <_i, \ldots, <_n) = a$ (society picks $a$), and
+$f(<_1, \ldots, <_i', \ldots, <_n) = b$ (society picks the one that voter $i$ likes better when they
+change their vote).
+We say $f$ is strategy-proof if $f$ cannot be strategically manipulated.
+
+Note: a strategy-proof voting mechanism will ensure that voters vote truthfully, so truthful voting
+is a dominant strategy.
+
+Bad property: \hldef{dictatorship}.
+There exists a voter $i$ such that $f$ will always choose the candidate at the top of voter $i$'s
+list.
+
+\begin{thm}{Gibbard--Satterthwaite}{41.1}
+  Any strategy-proof social choice function onto a set of at least 3 candidates is a dictatorship.
+\end{thm}
+
+Main ideas for the proof: assume $f \colon L^n \to A$ is strategy-proof.
+Construct a social welfare function $F \colon L^n \to L$ as follows.
+For some $a, b \in A$, move them to the top of the list.
+\begin{center}
+  \includegraphics[width=0.6\textwidth]{41-1}
+\end{center}
+One can show that $f$ will pick either $a$ or $b$.
+If $f$ picks $a$, then set $a > b$ in $F$.
+Otherwise, set $b > a$.
+Do this for all pairs $a, b$ to construct $F$.
+
+Need to show: $F$ is a total order, \emph{i.e.}, antisymmetric (easy) and transitive (hard).
+Then $F$ satisfies unanimity and IIA (not hard).
+Since there are at least 3 candidates, Arrow's impossibility theorem implies that $F$ is a
+dictatorship.
+The dictator for $F$ is a dictator for $f$.
+
+Mechanism design for voting seems to be all bad news.
+Research has been done to find ``escape routes'' to find strategy-proof mechanisms with the bad
+consequences.
+Examples: (1) restrict voter preferences in some way; (2) introduce money into a voter's utility
+(similar to mechanism design for auctions).
 %---------------
 \end{document}
 %---------------
